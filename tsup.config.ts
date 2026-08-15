@@ -8,7 +8,10 @@ export default defineConfig([
     target: "node18",
     platform: "node",
     dts: false,
-    clean: true,
+    // Never clean. Builds overwrite in place, so a second build starting while
+    // the CLI tests are spawning dist/cli.js cannot delete the file underneath
+    // them. Use `npm run clean` when you actually want an empty dist.
+    clean: false,
     // No sourcemap: this is a dev dependency people run, not code they debug,
     // and the map is larger than the bundle it describes.
     sourcemap: false,
