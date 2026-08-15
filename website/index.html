@@ -881,6 +881,169 @@
         border-radius: 4px;
       }
 
+      /* ---------- buy me a coffee ----------
+         The one warm colour on the page, so it reads as the only ask.
+         The QR is inline SVG: the page makes no external requests, and the
+         content security policy allows images from 'self' and data: only. */
+
+      .bmc {
+        position: fixed;
+        right: 20px;
+        bottom: 20px;
+        z-index: 60;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 12px;
+      }
+
+      .bmc-button {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        height: 52px;
+        padding: 0 18px;
+        font: inherit;
+        font-family: var(--font-mono);
+        font-size: 13.5px;
+        font-weight: 600;
+        color: #2b1a00;
+        background: #ffdd554d;
+        background: linear-gradient(180deg, #ffe066, #ffcf33);
+        border: 1px solid #e0ab00;
+        border-radius: 999px;
+        cursor: pointer;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+        transition: transform 0.18s ease, box-shadow 0.18s ease;
+      }
+
+      .bmc-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 26px rgba(0, 0, 0, 0.34);
+      }
+
+      .bmc-button:active {
+        transform: translateY(0);
+      }
+
+      .bmc-button svg {
+        width: 20px;
+        height: 20px;
+        flex: none;
+      }
+
+      .bmc-label {
+        white-space: nowrap;
+      }
+
+      .bmc-panel {
+        width: 232px;
+        padding: 16px;
+        background: var(--surface);
+        border: 1px solid var(--line-strong);
+        border-radius: 14px;
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
+        text-align: center;
+        transform-origin: bottom right;
+        animation: bmc-in 0.16s ease-out;
+      }
+
+      @keyframes bmc-in {
+        from {
+          opacity: 0;
+          transform: translateY(8px) scale(0.97);
+        }
+      }
+
+      .bmc-panel[hidden] {
+        display: none;
+      }
+
+      .bmc-qr {
+        width: 160px;
+        height: 160px;
+        margin: 0 auto 12px;
+        padding: 8px;
+        /* Always light behind the code. Contrast is what makes it scan. */
+        background: #ffffff;
+        border-radius: 8px;
+      }
+
+      .bmc-qr svg {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      .bmc-panel p {
+        margin: 0 0 12px;
+        font-size: 12.5px;
+        line-height: 1.45;
+        color: var(--text-dim);
+      }
+
+      .bmc-open {
+        display: block;
+        font-family: var(--font-mono);
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #2b1a00;
+        background: linear-gradient(180deg, #ffe066, #ffcf33);
+        border: 1px solid #e0ab00;
+        border-radius: 8px;
+        padding: 9px 12px;
+        text-decoration: none;
+      }
+
+      .bmc-open:hover {
+        filter: brightness(1.06);
+      }
+
+      .bmc-close {
+        position: absolute;
+        top: 6px;
+        right: 8px;
+        font: inherit;
+        font-size: 16px;
+        line-height: 1;
+        color: var(--text-faint);
+        background: none;
+        border: 0;
+        cursor: pointer;
+        padding: 4px;
+      }
+
+      .bmc-close:hover {
+        color: var(--text);
+      }
+
+      .bmc-panel {
+        position: relative;
+      }
+
+      @media (max-width: 640px) {
+        .bmc {
+          right: 14px;
+          bottom: 14px;
+        }
+
+        /* No room for a label next to the cup on a phone. */
+        .bmc-button {
+          height: 50px;
+          width: 50px;
+          padding: 0;
+          justify-content: center;
+        }
+
+        .bmc-label {
+          display: none;
+        }
+
+        .bmc-panel {
+          width: min(232px, calc(100vw - 28px));
+        }
+      }
+
       /* ---------- small screens ---------- */
 
       @media (max-width: 640px) {
@@ -1312,6 +1475,39 @@ Run <span class="t-accent">nextdoc --fix</span> to apply 2 automatic fixes.</pre
       </footer>
     </div>
 
+    <!-- Buy me a coffee. Fixed bottom right, opens a panel with a QR for a
+         phone camera and a link for everything else. The QR is inline SVG so
+         the page still makes no external requests. -->
+    <div class="bmc">
+      <div class="bmc-panel" id="bmc-panel" hidden>
+        <button class="bmc-close" type="button" id="bmc-close" aria-label="Close">&times;</button>
+        <div class="bmc-qr"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 37 37" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h37v37H0z"/><path stroke="#000000" d="M4 4.5h7m7 0h1m1 0h5m1 0h7M4 5.5h1m5 0h1m2 0h2m2 0h5m2 0h1m1 0h1m5 0h1M4 6.5h1m1 0h3m1 0h1m1 0h3m1 0h1m1 0h3m2 0h1m2 0h1m1 0h3m1 0h1M4 7.5h1m1 0h3m1 0h1m1 0h4m1 0h1m1 0h1m1 0h1m4 0h1m1 0h3m1 0h1M4 8.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h2m1 0h5m1 0h1m1 0h3m1 0h1M4 9.5h1m5 0h1m1 0h4m2 0h2m6 0h1m5 0h1M4 10.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M12 11.5h3m1 0h1m1 0h1m1 0h1m2 0h2M4 12.5h1m1 0h5m2 0h1m1 0h1m1 0h1m3 0h3m2 0h5M4 13.5h3m2 0h1m2 0h2m1 0h1m2 0h1m1 0h4m1 0h4m3 0h1M5 14.5h1m4 0h1m2 0h1m1 0h1m3 0h3m2 0h1m2 0h2M5 15.5h5m2 0h1m2 0h2m1 0h1m1 0h1m3 0h1m2 0h1m1 0h1m1 0h1M5 16.5h6m1 0h1m3 0h1m3 0h2m7 0h2M6 17.5h2m1 0h1m3 0h3m1 0h1m5 0h6m3 0h1M4 18.5h1m1 0h1m1 0h1m1 0h1m1 0h1m3 0h6m2 0h2m1 0h4M4 19.5h2m2 0h1m2 0h1m4 0h2m1 0h1m4 0h1m6 0h1M4 20.5h1m1 0h1m3 0h1m3 0h2m2 0h2m1 0h1m5 0h1m1 0h2M4 21.5h2m1 0h3m2 0h1m3 0h1m3 0h1m1 0h7m1 0h1m1 0h1M4 22.5h1m1 0h1m3 0h1m1 0h2m1 0h1m3 0h1m2 0h1m2 0h1m1 0h2m1 0h1M4 23.5h1m2 0h2m2 0h6m1 0h3m2 0h2m1 0h3m2 0h1M4 24.5h1m1 0h1m1 0h3m1 0h5m2 0h1m1 0h1m2 0h5m1 0h3M12 25.5h3m2 0h2m1 0h3m1 0h1m3 0h5M4 26.5h7m5 0h5m2 0h2m1 0h1m1 0h3M4 27.5h1m5 0h1m1 0h1m1 0h4m2 0h1m2 0h2m3 0h1m3 0h1M4 28.5h1m1 0h3m1 0h1m1 0h1m5 0h1m2 0h1m2 0h5m1 0h1M4 29.5h1m1 0h3m1 0h1m1 0h1m2 0h1m1 0h1m2 0h1m1 0h1m1 0h1m2 0h1m1 0h4M4 30.5h1m1 0h3m1 0h1m1 0h6m1 0h2m1 0h2m1 0h7M4 31.5h1m5 0h1m2 0h1m1 0h3m6 0h1m1 0h1m2 0h1m1 0h1M4 32.5h7m1 0h1m1 0h1m2 0h5m1 0h1m2 0h1m1 0h1m1 0h1"/></svg></div>
+        <p>Scan with your phone, or open it here.</p>
+        <a
+          class="bmc-open"
+          href="https://buymeacoffee.com/wamasoda?new=1"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Open buymeacoffee.com</a>
+      </div>
+
+      <button
+        class="bmc-button"
+        type="button"
+        id="bmc-toggle"
+        aria-expanded="false"
+        aria-controls="bmc-panel"
+        aria-label="Buy me a coffee"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 9h13v6a5 5 0 0 1-5 5H9a5 5 0 0 1-5-5V9Z" />
+          <path d="M17 10h1.6a2.4 2.4 0 0 1 0 4.8H17" />
+          <path d="M7.5 2.5v2M11 2.5v2M14.5 2.5v2" />
+        </svg>
+        <span class="bmc-label">Buy me a coffee</span>
+      </button>
+    </div>
+
     <script>
       // One copy handler for every copyable surface. The button swaps its icon
       // to a tick, then swaps back.
@@ -1334,6 +1530,38 @@ Run <span class="t-accent">nextdoc --fix</span> to apply 2 automatic fixes.</pre
         button.timer = setTimeout(() => {
           button.dataset.copied = "false";
         }, 1600);
+      });
+
+      // Buy me a coffee. The button opens a panel holding a QR for a phone
+      // camera and a link for everything else, rather than navigating away
+      // the moment someone taps it.
+      const bmcToggle = document.getElementById("bmc-toggle");
+      const bmcPanel = document.getElementById("bmc-panel");
+      const bmcClose = document.getElementById("bmc-close");
+
+      const setCoffee = (open) => {
+        bmcPanel.hidden = !open;
+        bmcToggle.setAttribute("aria-expanded", String(open));
+        if (open) bmcPanel.querySelector(".bmc-open").focus();
+      };
+
+      bmcToggle.addEventListener("click", () => setCoffee(bmcPanel.hidden));
+      bmcClose.addEventListener("click", () => {
+        setCoffee(false);
+        bmcToggle.focus();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !bmcPanel.hidden) {
+          setCoffee(false);
+          bmcToggle.focus();
+        }
+      });
+
+      document.addEventListener("click", (event) => {
+        if (bmcPanel.hidden) return;
+        if (event.target.closest(".bmc")) return;
+        setCoffee(false);
       });
 
       // Theme. The system setting decides until the reader picks one, then the
