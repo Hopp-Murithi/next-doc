@@ -9,6 +9,33 @@ code or removing a JSON field is a breaking change.
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-08-15
+
+Documentation only. No code changed.
+
+### Fixed
+
+- The npm page badges for licence and Node version read "package not found".
+  shields.io needs the scope URL encoded, otherwise it reads the slash in the
+  package name as a path separator.
+- The CI badge now filters on the default branch, so a failed release run on a
+  tag cannot show the project as failing.
+- The README contents list was one wrapping line of links. It is a grouped
+  table now, so the page is navigable from the top.
+
+## [0.3.0] - 2026-08-15
+
+### Changed
+
+- **Renamed to `@wamasoda/nextdoc`.** The binary is `nextdoc`, the config file
+  is `nextdoc.config.json`, the suppression comment is `nextdoc-ignore`, and
+  the written report is `nextdoc-report.md`.
+- The old names still work. `next-doc.config.*` is still read, and a
+  `// next-doc-ignore` comment is still honoured, because suppression comments
+  live in other people's source.
+
+The GitHub repository and the deployed site keep their existing addresses.
+
 ## [0.2.0] - 2026-08-15
 
 Making the output usable on a real codebase. A first run on a large app

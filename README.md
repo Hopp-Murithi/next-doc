@@ -4,10 +4,12 @@
 
 **One command. Full picture of your Next.js or React app.**
 
-[![npm](https://img.shields.io/npm/v/@wamasoda/nextdoc.svg?color=0c7c88)](https://www.npmjs.com/package/@wamasoda/nextdoc)
-[![CI](https://github.com/Hopp-Murithi/next-doc/actions/workflows/ci.yml/badge.svg)](https://github.com/Hopp-Murithi/next-doc/actions/workflows/ci.yml)
-[![node](https://img.shields.io/node/v/@wamasoda/nextdoc.svg?color=0c7c88)](https://nodejs.org)
-[![license](https://img.shields.io/npm/l/@wamasoda/nextdoc.svg?color=0c7c88)](LICENSE)
+<!-- The scope has to be URL encoded, or shields.io reads the slash as a path
+     separator and answers "package not found". -->
+[![npm](https://img.shields.io/npm/v/%40wamasoda%2Fnextdoc?color=0c7c88&label=npm)](https://www.npmjs.com/package/@wamasoda/nextdoc)
+[![CI](https://github.com/Hopp-Murithi/next-doc/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Hopp-Murithi/next-doc/actions/workflows/ci.yml)
+[![node](https://img.shields.io/node/v/%40wamasoda%2Fnextdoc?color=0c7c88&label=node)](https://nodejs.org)
+[![license](https://img.shields.io/npm/l/%40wamasoda%2Fnextdoc?color=0c7c88&label=license)](LICENSE)
 
 [Website](https://next-doc-taupe.vercel.app) · [Documentation](docs/01-getting-started.md) · [Rule reference](#rule-reference) · [Verification](VERIFICATION.md) · [Changelog](CHANGELOG.md)
 
@@ -53,7 +55,33 @@ Score: 61/100
 
 ## Contents
 
-[Install](#install) · [What it checks](#what-it-checks) · [Works with](#works-with) · [Commands](#commands) · [Flags](#flags) · [Exit codes](#exit-codes) · [Reading the output](#reading-the-output) · [In CI](#in-ci) · [Idempotency runtime](#idempotency-runtime) · [Configuration](#configuration) · [Rule reference](#rule-reference) · [Notes worth knowing](#notes-worth-knowing) · [Documentation](#documentation)
+**Start here**
+
+| Section | What is in it |
+| --- | --- |
+| [Install](#install) | npx, or add it to the project |
+| [What it checks](#what-it-checks) | The four plugins, one line each |
+| [Works with](#works-with) | Next.js, Vite, CRA, Remix, React Router, Astro, React |
+
+**Using it**
+
+| Section | What is in it |
+| --- | --- |
+| [Commands](#commands) | Run everything, or name the plugins you want |
+| [Flags](#flags) | Every flag, including `--report` and `--fix` |
+| [Exit codes](#exit-codes) | What each code means for your CI step |
+| [Reading the output](#reading-the-output) | Icons, the score, and the report file |
+| [In CI](#in-ci) | The workflow snippet, and what to gate on |
+
+**Reference**
+
+| Section | What is in it |
+| --- | --- |
+| [Idempotency runtime](#idempotency-runtime) | `withIdempotency`, adapters, behaviour table |
+| [Configuration](#configuration) | The config file and inline suppression |
+| [Rule reference](#rule-reference) | All 23 rule codes and their defaults |
+| [Notes worth knowing](#notes-worth-knowing) | Secrets, fixes, heuristics, programmatic use |
+| [Documentation](#documentation) | The full docs set, page by page |
 
 ## Install
 

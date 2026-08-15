@@ -1,11 +1,11 @@
 # Verification report
 
-Everything that was run before `@wamasoda/nextdoc@0.1.0` shipped,
+Everything that was run before `@wamasoda/nextdoc@0.3.0` shipped,
 what it produced, and how to see it for yourself.
 
 Release date: 15 August 2026
-Commit: `08e74c1`
-Tag: [`v0.1.0`](https://github.com/Hopp-Murithi/next-doc/releases/tag/v0.1.0)
+Commit: `19e8fcf`
+Tag: [`v0.3.0`](https://github.com/Hopp-Murithi/next-doc/releases)
 
 ---
 
@@ -17,13 +17,28 @@ Tag: [`v0.1.0`](https://github.com/Hopp-Murithi/next-doc/releases/tag/v0.1.0)
 | Repository | [github.com/Hopp-Murithi/next-doc](https://github.com/Hopp-Murithi/next-doc) |
 | Website | [next-doc-taupe.vercel.app](https://next-doc-taupe.vercel.app) |
 | CI runs | [Actions tab](https://github.com/Hopp-Murithi/next-doc/actions) |
-| Release | [Releases](https://github.com/Hopp-Murithi/next-doc/releases/tag/v0.1.0) |
+| Releases | [All releases](https://github.com/Hopp-Murithi/next-doc/releases) |
+
+---
+
+## Contents
+
+| | Section | Result |
+| --- | --- | --- |
+| 1 | [Test suite](#1-test-suite) | 84 passing |
+| 2 | [Continuous integration](#2-continuous-integration) | Green, 10 jobs |
+| 3 | [Security](#3-security) | Zero vulnerabilities |
+| 4 | [Bundle budgets](#4-bundle-budgets) | All under budget |
+| 5 | [Published package](#5-published-package) | 47 files, 140 kB |
+| 6 | [Website](#6-website) | Live, six headers |
+| 7 | [Bugs found by this process](#7-bugs-found-by-this-process) | Four, all fixed |
+| 8 | [Reproducing all of it](#8-reproducing-all-of-it) | One command |
 
 ---
 
 ## 1. Test suite
 
-**82 tests, all passing.** Run them with `pnpm run test`.
+**84 tests, all passing.** Run them with `pnpm run test`.
 
 | File | Tests | Covers |
 | --- | --- | --- |
@@ -31,7 +46,7 @@ Tag: [`v0.1.0`](https://github.com/Hopp-Murithi/next-doc/releases/tag/v0.1.0)
 | `test/runtime/idempotency.test.ts` | 21 | `withIdempotency`, concurrency, failure modes |
 | `test/plugins.test.ts` | 16 | All four plugins against fixture projects |
 | `test/runtime/adapters.test.ts` | 13 | Memory, Redis and Postgres storage |
-| `test/cli.test.ts` | 10 | The real binary, exit codes, output formats |
+| `test/cli.test.ts` | 12 | The real binary, exit codes, output formats |
 
 Runtime: about 8 seconds.
 
@@ -179,7 +194,7 @@ pnpm run size
 
 ## 5. Published package
 
-**`@wamasoda/nextdoc@0.1.0`**, 47 files, 523 kB unpacked.
+**`@wamasoda/nextdoc@0.3.0`**, 47 files, 140 kB packed, 540 kB unpacked.
 
 The tarball carries `dist`, `docs`, `schema.json`, the README, the
 licence and the changelog. No source, no tests, no fixtures.
@@ -231,9 +246,9 @@ curl -I https://next-doc-taupe.vercel.app
 
 ## 7. Bugs found by this process
 
-Three real defects were caught before release, each by a different
-check. They are listed because they are the argument for running any
-of this at all.
+Four real defects were caught by running this on real projects rather
+than on fixtures. They are listed because they are the argument for
+doing any of it.
 
 **JSON output truncated at 8 kb.** The CLI exited while stdout was
 still flushing, so any `--json` report larger than the pipe buffer

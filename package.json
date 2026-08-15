@@ -1,6 +1,6 @@
 {
   "name": "@wamasoda/nextdoc",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "One command. Full picture of your Next.js or React app. Audits env vars, security, performance and idempotency.",
   "keywords": [
     "nextjs",
