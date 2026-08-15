@@ -1,0 +1,9 @@
+# Normalise line endings. This is a cross platform CLI, and a mixed checkout
+# turns every diff into noise and breaks snapshot comparisons in CI.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary
+*.woff binary
+*.woff2 binary

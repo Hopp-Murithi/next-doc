@@ -1,0 +1,1378 @@
+<!doctype html>
+<!-- No data-theme attribute on purpose: the page follows the reader's system
+     setting until they choose otherwise with the toggle. -->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>next-doc</title>
+    <meta
+      name="description"
+      content="One command. Full picture of your Next.js or React app. Audits env vars, security, performance and idempotency."
+    />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="theme-color" content="#0b1113" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><text y='14' font-size='14'>&#129658;</text></svg>"
+    />
+    <style>
+      /* ---------------------------------------------------------------
+         next-doc, one page site.
+
+         Colour system: one cyan accent for the product, plus the report's
+         own three signal colours (pass, warn, fail) reused as the identity
+         of the four plugins. Nothing else gets a hue.
+
+         Dark first, because the report is the centre of the page. The
+         reader's system setting decides until they use the toggle.
+         --------------------------------------------------------------- */
+
+      :root {
+        --ground: #0a1012;
+        --surface: #101a1d;
+        --raised: #162327;
+        --panel: #0d1618;
+        --line: #1d2c30;
+        --line-strong: #294046;
+        --text: #e8f1f2;
+        --text-dim: #9db0b4;
+        --text-faint: #6b8085;
+
+        --accent: #38ccd8;
+        --accent-quiet: rgba(56, 204, 216, 0.14);
+        --accent-line: rgba(56, 204, 216, 0.4);
+
+        --pass: #4fc084;
+        --pass-quiet: rgba(79, 192, 132, 0.14);
+        --warn: #e6ad4b;
+        --warn-quiet: rgba(230, 173, 75, 0.14);
+        --fail: #ec6a60;
+        --fail-quiet: rgba(236, 106, 96, 0.14);
+
+        --shadow: 0 1px 0 rgba(255, 255, 255, 0.03) inset;
+
+        --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, "SF Mono", Menlo,
+          "Cascadia Mono", Consolas, monospace;
+        --font-sans: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+          sans-serif;
+
+        --page: 1080px;
+        --radius: 8px;
+      }
+
+      @media (prefers-color-scheme: light) {
+        :root:not([data-theme="dark"]) {
+          --ground: #f2f6f6;
+          --surface: #ffffff;
+          --raised: #e9f0f0;
+          --panel: #0d1618;
+          --line: #dae4e5;
+          --line-strong: #bacacd;
+          --text: #0c1719;
+          --text-dim: #46595e;
+          --text-faint: #6d8387;
+
+          --accent: #0c7c88;
+          --accent-quiet: rgba(12, 124, 136, 0.1);
+          --accent-line: rgba(12, 124, 136, 0.35);
+
+          --pass: #2c8558;
+          --pass-quiet: rgba(44, 133, 88, 0.1);
+          --warn: #96650f;
+          --warn-quiet: rgba(150, 101, 15, 0.12);
+          --fail: #bf392b;
+          --fail-quiet: rgba(191, 57, 43, 0.1);
+
+          --shadow: 0 1px 2px rgba(12, 23, 25, 0.06);
+        }
+      }
+
+      :root[data-theme="light"] {
+        --ground: #f2f6f6;
+        --surface: #ffffff;
+        --raised: #e9f0f0;
+        --panel: #0d1618;
+        --line: #dae4e5;
+        --line-strong: #bacacd;
+        --text: #0c1719;
+        --text-dim: #46595e;
+        --text-faint: #6d8387;
+
+        --accent: #0c7c88;
+        --accent-quiet: rgba(12, 124, 136, 0.1);
+        --accent-line: rgba(12, 124, 136, 0.35);
+
+        --pass: #2c8558;
+        --pass-quiet: rgba(44, 133, 88, 0.1);
+        --warn: #96650f;
+        --warn-quiet: rgba(150, 101, 15, 0.12);
+        --fail: #bf392b;
+        --fail-quiet: rgba(191, 57, 43, 0.1);
+
+        --shadow: 0 1px 2px rgba(12, 23, 25, 0.06);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        margin: 0;
+        background: var(--ground);
+        color: var(--text);
+        font-family: var(--font-sans);
+        font-size: 16px;
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .wrap {
+        width: 100%;
+        max-width: var(--page);
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      /* ---------- entrance, one orchestrated moment ---------- */
+
+      @keyframes rise {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      .rise {
+        animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.3, 1) both;
+      }
+
+      .d1 {
+        animation-delay: 0.05s;
+      }
+      .d2 {
+        animation-delay: 0.12s;
+      }
+      .d3 {
+        animation-delay: 0.19s;
+      }
+      .d4 {
+        animation-delay: 0.26s;
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        html {
+          scroll-behavior: auto;
+        }
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-delay: 0ms !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
+      /* ---------- top bar ---------- */
+
+      .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        padding: 18px 0;
+        font-family: var(--font-mono);
+        font-size: 13px;
+      }
+
+      .brandmark {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        color: var(--text);
+        text-decoration: none;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      .pulse {
+        width: 26px;
+        height: 12px;
+        flex: none;
+      }
+
+      .pulse path {
+        fill: none;
+        stroke: var(--accent);
+        stroke-width: 1.7;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .topnav {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+
+      .topnav a {
+        color: var(--text-dim);
+        text-decoration: none;
+        transition: color 0.15s ease;
+      }
+
+      .topnav a:hover {
+        color: var(--accent);
+      }
+
+      .toggle {
+        font: inherit;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--text-dim);
+        background: transparent;
+        border: 1px solid var(--line-strong);
+        border-radius: 999px;
+        padding: 3px 11px;
+        cursor: pointer;
+        transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+      }
+
+      .toggle:hover {
+        color: var(--accent);
+        border-color: var(--accent-line);
+        background: var(--accent-quiet);
+      }
+
+      /* ---------- hero ---------- */
+
+      .hero {
+        position: relative;
+        padding-bottom: 56px;
+        border-bottom: 1px solid var(--line);
+        overflow: hidden;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: linear-gradient(var(--line) 1px, transparent 1px),
+          linear-gradient(90deg, var(--line) 1px, transparent 1px);
+        background-size: 44px 44px;
+        mask-image: radial-gradient(115% 80% at 15% 0%, #000 0%, transparent 70%);
+        pointer-events: none;
+      }
+
+      .hero > * {
+        position: relative;
+      }
+
+      .hero-inner {
+        padding-top: 56px;
+      }
+
+      .eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        font-family: var(--font-mono);
+        font-size: 11.5px;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--accent);
+        background: var(--accent-quiet);
+        border: 1px solid var(--accent-line);
+        border-radius: 999px;
+        padding: 4px 12px;
+        margin: 0 0 22px;
+      }
+
+      h1 {
+        font-family: var(--font-mono);
+        font-size: clamp(36px, 6.2vw, 64px);
+        line-height: 1.03;
+        letter-spacing: -0.04em;
+        font-weight: 700;
+        margin: 0 0 16px;
+        text-wrap: balance;
+      }
+
+      h1 em {
+        font-style: normal;
+        color: var(--accent);
+      }
+
+      .lede {
+        font-size: clamp(17px, 2vw, 20px);
+        color: var(--text-dim);
+        max-width: 54ch;
+        margin: 0 0 30px;
+        text-wrap: pretty;
+      }
+
+      .stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin: 26px 0 0;
+        padding: 0;
+        list-style: none;
+        font-family: var(--font-mono);
+        font-size: 12.5px;
+      }
+
+      .stats li {
+        display: flex;
+        align-items: baseline;
+        gap: 7px;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 5px 13px;
+        color: var(--text-faint);
+        box-shadow: var(--shadow);
+      }
+
+      .stats b {
+        color: var(--text);
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+      }
+
+      /* ---------- snippet: the one copyable surface, used everywhere ---------- */
+
+      /* One line command: the box is the command, the icon sits inside it. */
+      .cmd {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: var(--surface);
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius);
+        padding: 4px 6px 4px 14px;
+        box-shadow: var(--shadow);
+      }
+
+      .cmd code {
+        flex: 1;
+        min-width: 0;
+        font-family: var(--font-mono);
+        font-size: 14.5px;
+        color: var(--text);
+        white-space: nowrap;
+        overflow-x: auto;
+        padding: 8px 0;
+      }
+
+      .prompt {
+        color: var(--accent);
+        user-select: none;
+        margin-right: 9px;
+      }
+
+      /* Multi line code: same box, same icon, pinned to the corner. */
+      .snippet {
+        position: relative;
+        background: var(--panel);
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+
+      .snippet-label {
+        display: block;
+        padding: 9px 14px 0;
+        font-family: var(--font-mono);
+        font-size: 11.5px;
+        color: #6f878d;
+      }
+
+      .snippet pre {
+        margin: 0;
+        padding: 10px 16px 16px;
+        overflow-x: auto;
+        font-family: var(--font-mono);
+        font-size: 13.5px;
+        line-height: 1.7;
+        color: #cfdde0;
+      }
+
+      .snippet .copy {
+        position: absolute;
+        top: 7px;
+        right: 7px;
+      }
+
+      .copy {
+        display: inline-grid;
+        place-items: center;
+        width: 30px;
+        height: 30px;
+        flex: none;
+        color: var(--text-faint);
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: 6px;
+        cursor: pointer;
+        padding: 0;
+        transition: color 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+      }
+
+      .copy:hover {
+        color: var(--accent);
+        background: var(--accent-quiet);
+        border-color: var(--accent-line);
+      }
+
+      .copy svg {
+        width: 15px;
+        height: 15px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 1.6;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .copy .tick {
+        display: none;
+      }
+
+      .copy[data-copied="true"] {
+        color: var(--pass);
+        background: var(--pass-quiet);
+        border-color: var(--pass);
+      }
+
+      .copy[data-copied="true"] .mark {
+        display: none;
+      }
+
+      .copy[data-copied="true"] .tick {
+        display: block;
+      }
+
+      .snippet .copy {
+        color: #78909a;
+      }
+
+      .snippet .copy:hover {
+        color: #4ad6e2;
+        background: rgba(56, 204, 216, 0.14);
+        border-color: rgba(56, 204, 216, 0.4);
+      }
+
+      .snippet .copy[data-copied="true"] {
+        color: #6fdba2;
+        background: rgba(79, 192, 132, 0.16);
+        border-color: rgba(79, 192, 132, 0.5);
+      }
+
+      .hero .cmd {
+        max-width: 420px;
+        width: 100%;
+      }
+
+      .cta-row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .textlink {
+        font-family: var(--font-mono);
+        font-size: 13.5px;
+        color: var(--text-dim);
+        text-decoration: none;
+        border-bottom: 1px solid var(--line-strong);
+        padding-bottom: 2px;
+        transition: color 0.15s ease, border-color 0.15s ease;
+      }
+
+      .textlink:hover {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+
+      /* ---------- sections ---------- */
+
+      section {
+        padding: 64px 0;
+        border-bottom: 1px solid var(--line);
+      }
+
+      .head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin-bottom: 24px;
+      }
+
+      h2 {
+        font-family: var(--font-mono);
+        font-size: 20px;
+        letter-spacing: -0.025em;
+        font-weight: 700;
+        margin: 0;
+      }
+
+      .head p {
+        margin: 0;
+        font-size: 14.5px;
+        color: var(--text-dim);
+        max-width: 40ch;
+      }
+
+      /* ---------- report ---------- */
+
+      .report {
+        background: var(--panel);
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius);
+        overflow: hidden;
+      }
+
+      .report-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--line-strong);
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: #7d949a;
+      }
+
+      .dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        background: #2b3a3f;
+      }
+
+      .report-body {
+        overflow-x: auto;
+        padding: 18px 20px 22px;
+      }
+
+      .report pre {
+        font-family: var(--font-mono);
+        font-size: 13.5px;
+        line-height: 1.72;
+        margin: 0;
+        color: #c9d9dc;
+        min-width: 600px;
+      }
+
+      .t-head {
+        color: #ffffff;
+        font-weight: 700;
+      }
+
+      .t-meta,
+      .t-loc {
+        color: #7d949a;
+      }
+
+      .t-group {
+        color: #b9cbcf;
+        font-weight: 700;
+      }
+
+      .t-pass {
+        color: #58cf90;
+      }
+      .t-warn {
+        color: #ecb960;
+      }
+      .t-fail {
+        color: #f37a70;
+      }
+      .t-accent {
+        color: #4ad6e2;
+      }
+
+      .legend {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 10px;
+        margin: 16px 0 0;
+        padding: 0;
+        list-style: none;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--text-faint);
+      }
+
+      .legend li {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 3px 11px;
+      }
+
+      .legend b {
+        font-weight: 700;
+      }
+
+      .legend .p {
+        color: var(--pass);
+      }
+      .legend .w {
+        color: var(--warn);
+      }
+      .legend .f {
+        color: var(--fail);
+      }
+
+      /* ---------- plugin cards ---------- */
+
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 14px;
+      }
+
+      .card {
+        position: relative;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        padding: 20px;
+        box-shadow: var(--shadow);
+        overflow: hidden;
+        transition: border-color 0.18s ease, transform 0.18s ease;
+      }
+
+      .card::before {
+        content: "";
+        position: absolute;
+        inset: 0 0 auto 0;
+        height: 2px;
+        background: var(--hue);
+      }
+
+      .card:hover {
+        border-color: var(--hue);
+        transform: translateY(-2px);
+      }
+
+      .card h3 {
+        display: inline-flex;
+        align-items: center;
+        font-family: var(--font-mono);
+        font-size: 12.5px;
+        letter-spacing: 0.04em;
+        margin: 0 0 12px;
+        padding: 3px 10px;
+        border-radius: 999px;
+        color: var(--hue);
+        background: var(--hue-quiet);
+      }
+
+      .card p {
+        margin: 0 0 14px;
+        font-size: 14.5px;
+        color: var(--text-dim);
+      }
+
+      .checks {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--text-faint);
+      }
+
+      .checks li {
+        display: flex;
+        gap: 9px;
+        align-items: baseline;
+      }
+
+      .checks li::before {
+        content: "";
+        width: 5px;
+        height: 5px;
+        flex: none;
+        border-radius: 1px;
+        background: var(--hue);
+        transform: translateY(-2px);
+      }
+
+      /* ---------- two column blocks ---------- */
+
+      .split {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 22px;
+        align-items: start;
+      }
+
+      @media (min-width: 880px) {
+        .split {
+          grid-template-columns: 1.2fr 1fr;
+        }
+      }
+
+      .facts {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+      }
+
+      .facts th,
+      .facts td {
+        text-align: left;
+        padding: 8px 12px 8px 0;
+        border-bottom: 1px solid var(--line);
+        vertical-align: top;
+      }
+
+      .facts th {
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        letter-spacing: 0.11em;
+        text-transform: uppercase;
+        color: var(--text-faint);
+        font-weight: 500;
+      }
+
+      .facts td:first-child {
+        color: var(--text-dim);
+        padding-right: 18px;
+      }
+
+      .facts code {
+        font-family: var(--font-mono);
+        font-size: 12.5px;
+        font-variant-numeric: tabular-nums;
+        color: var(--text);
+        background: var(--raised);
+        border-radius: 4px;
+        padding: 1px 6px;
+      }
+
+      .facts .ok code {
+        color: var(--pass);
+        background: var(--pass-quiet);
+      }
+      .facts .no code {
+        color: var(--fail);
+        background: var(--fail-quiet);
+      }
+      .facts .mid code {
+        color: var(--warn);
+        background: var(--warn-quiet);
+      }
+
+      /* ---------- quick start ---------- */
+
+      .steps {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 16px;
+        counter-reset: step;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .steps > li {
+        counter-increment: step;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .steps h3 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: var(--font-mono);
+        font-size: 14px;
+        font-weight: 600;
+        margin: 0;
+      }
+
+      .steps h3::before {
+        content: counter(step);
+        font-size: 11px;
+        color: var(--accent);
+        background: var(--accent-quiet);
+        border: 1px solid var(--accent-line);
+        border-radius: 50%;
+        width: 22px;
+        height: 22px;
+        display: grid;
+        place-items: center;
+        flex: none;
+      }
+
+      .steps p {
+        margin: 0;
+        font-size: 13.5px;
+        color: var(--text-dim);
+      }
+
+      /* ---------- code tokens ---------- */
+
+      .c-key {
+        color: #4ad6e2;
+      }
+      .c-str {
+        color: #8fd6a8;
+      }
+      .c-com {
+        color: #6b8085;
+      }
+
+      /* ---------- footer ---------- */
+
+      footer {
+        padding: 32px 0 56px;
+        font-family: var(--font-mono);
+        font-size: 12.5px;
+        color: var(--text-faint);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 26px;
+        justify-content: space-between;
+        align-items: baseline;
+      }
+
+      footer nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px;
+      }
+
+      footer a {
+        color: var(--text-dim);
+        text-decoration: none;
+      }
+
+      footer a:hover {
+        color: var(--accent);
+      }
+
+      a:focus-visible,
+      button:focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+        border-radius: 4px;
+      }
+
+      /* ---------- small screens ---------- */
+
+      @media (max-width: 640px) {
+        .wrap {
+          padding: 0 18px;
+        }
+
+        .hero-inner {
+          padding-top: 40px;
+        }
+
+        .hero {
+          padding-bottom: 44px;
+        }
+
+        section {
+          padding: 48px 0;
+        }
+
+        .topbar {
+          flex-wrap: wrap;
+          gap: 10px 16px;
+        }
+
+        .topnav {
+          gap: 14px;
+          font-size: 12px;
+        }
+
+        .hero .cmd {
+          max-width: none;
+        }
+
+        .cmd code {
+          font-size: 13.5px;
+        }
+
+        .report-body {
+          padding: 14px 12px 18px;
+        }
+
+        .report pre {
+          font-size: 12px;
+        }
+
+        .facts td:first-child {
+          padding-right: 10px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="hero">
+      <div class="wrap">
+        <div class="topbar">
+          <a class="brandmark" href="#top">
+            <svg class="pulse" viewBox="0 0 26 12" aria-hidden="true">
+              <path d="M0 6h6l2-4 3 8 2.5-6 2 2H26" />
+            </svg>
+            next-doc
+          </a>
+          <nav class="topnav">
+            <a href="https://github.com/hopp/next-doc#readme">Docs</a>
+            <a href="https://github.com/hopp/next-doc">GitHub</a>
+            <a href="https://www.npmjs.com/package/next-doc">npm</a>
+            <button class="toggle" type="button" id="theme-toggle">Light</button>
+          </nav>
+        </div>
+
+        <div class="hero-inner">
+          <p class="eyebrow rise" id="top">Next.js and React audit CLI</p>
+          <h1 class="rise d1">One command.<br /><em>Full picture of your app.</em></h1>
+          <p class="lede rise d2">
+            Finds the secret in your client bundle, the route shipping half a megabyte, and the
+            payment handler that will charge twice.
+          </p>
+
+          <div class="cta-row rise d3">
+            <div class="cmd">
+              <code><span class="prompt">&gt;</span>npx next-doc</code>
+              <button class="copy" type="button" data-copy="npx next-doc" aria-label="Copy command">
+                <svg class="mark" viewBox="0 0 16 16" aria-hidden="true">
+                  <rect x="5.5" y="5.5" width="9" height="9" rx="2" />
+                  <path d="M11 2.5H3.5A1.5 1.5 0 0 0 2 4v7.5" />
+                </svg>
+                <svg class="tick" viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M3 8.6l3.2 3.2L13 5" />
+                </svg>
+              </button>
+            </div>
+            <a class="textlink" href="https://github.com/hopp/next-doc">Read the source</a>
+          </div>
+
+          <ul class="stats rise d4">
+            <li><b>4</b> plugins</li>
+            <li><b>22</b> rules</li>
+            <li><b>0</b> network calls</li>
+            <li><b>2.3kb</b> runtime</li>
+            <li><b>7</b> frameworks</li>
+          </ul>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section>
+        <div class="wrap">
+          <div class="head">
+            <h2>The report</h2>
+            <p>Every finding carries a file, a line, and what to change.</p>
+          </div>
+
+          <div class="report">
+            <div class="report-bar">
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+              <span style="margin-left: 6px">npx next-doc</span>
+            </div>
+            <div class="report-body">
+<pre><span class="t-head">NEXT DOC</span>
+<span class="t-meta">Next.js 15.1.0  TypeScript  App Router</span>
+
+<span class="t-group">ENV</span>
+  <span class="t-pass">✓</span> All 12 referenced variables are defined
+  <span class="t-fail">✗</span> NEXT_PUBLIC_STRIPE_SECRET_KEY looks like a secret exposed to the client
+      <span class="t-loc">src/lib/stripe.ts:3</span>
+      <span class="t-loc">Suggestion:</span> Rename it without the NEXT_PUBLIC_ prefix, read it server side only.
+
+<span class="t-group">SECURITY</span>
+  <span class="t-warn">△</span> 2 security headers are not configured: Permissions-Policy, HSTS
+      <span class="t-loc">next.config.mjs</span>
+  <span class="t-fail">✗</span> Client component ProfileForm.tsx pulls in server package "pg"
+      <span class="t-loc">src/lib/data.ts:1</span>
+      <span class="t-loc">Suggestion:</span> Move it to a Server Component, pass the result down as props.
+
+<span class="t-group">PERFORMANCE</span>
+  <span class="t-warn">△</span> StaticCard.tsx is a Client Component with no interactivity detected
+  <span class="t-fail">✗</span> /dashboard ships 487kb of JavaScript, the largest route in the app
+
+<span class="t-group">IDEMPOTENCY</span>
+  <span class="t-fail">✗</span> app/api/payments/route.ts has no idempotency key handling detected
+      <span class="t-loc">app/api/payments/route.ts:3</span>
+      <span class="t-loc">Suggestion:</span> Wrap it with withIdempotency from next-doc/idempotency.
+
+<span class="t-head">Score: 61</span><span class="t-loc">/100</span>
+<span class="t-meta">4 errors, 3 warnings, 6 passed</span>
+
+Run <span class="t-accent">next-doc --fix</span> to apply 2 automatic fixes.</pre>
+            </div>
+          </div>
+
+          <ul class="legend">
+            <li><b class="p">✓</b> passed</li>
+            <li><b class="w">△</b> warning, does not fail the build</li>
+            <li><b class="f">✗</b> error, exit code 1</li>
+            <li>plain ASCII outside a TTY</li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap">
+          <div class="head">
+            <h2>Four plugins</h2>
+            <p>Run all of them, or name the ones you want.</p>
+          </div>
+
+          <div class="cards">
+            <article class="card" style="--hue: var(--accent); --hue-quiet: var(--accent-quiet)">
+              <h3>env</h3>
+              <p>Your code, your .env files and your template, checked against each other.</p>
+              <ul class="checks">
+                <li>NEXT_PUBLIC_, VITE_, REACT_APP_ leaks</li>
+                <li>Read in code, defined nowhere</li>
+                <li>Drift from .env.example, fixable</li>
+              </ul>
+            </article>
+
+            <article class="card" style="--hue: var(--fail); --hue-quiet: var(--fail-quiet)">
+              <h3>security</h3>
+              <p>The mistakes that pass code review and fail in production.</p>
+              <ul class="checks">
+                <li>Server packages in client bundles</li>
+                <li>Unverified webhooks, open redirects</li>
+                <li>Missing headers and CSP</li>
+              </ul>
+            </article>
+
+            <article class="card" style="--hue: var(--warn); --hue-quiet: var(--warn-quiet)">
+              <h3>performance</h3>
+              <p>Measured from your real build output, never estimated.</p>
+              <ul class="checks">
+                <li>Routes over your JavaScript budget</li>
+                <li>"use client" with no interactivity</li>
+                <li>Fetches with no caching intent</li>
+              </ul>
+            </article>
+
+            <article class="card" style="--hue: var(--pass); --hue-quiet: var(--pass-quiet)">
+              <h3>idempotency</h3>
+              <p>Money handling routes with no protection against a retry.</p>
+              <ul class="checks">
+                <li>POST handlers on payment paths</li>
+                <li>Keys read but never stored</li>
+                <li>Ships a runtime fix, not just a finding</li>
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap">
+          <div class="head">
+            <h2>Runs in CI</h2>
+            <p>Documented exit codes, versioned JSON, markdown for a pull request.</p>
+          </div>
+
+          <div class="split">
+            <div class="snippet">
+              <span class="snippet-label">.github/workflows/audit.yml</span>
+              <button
+                class="copy"
+                type="button"
+                data-copy="- run: npm run build&#10;- run: npx next-doc --json > next-doc-report.json&#10;- run: npx next-doc --strict"
+                aria-label="Copy workflow steps"
+              >
+                <svg class="mark" viewBox="0 0 16 16" aria-hidden="true">
+                  <rect x="5.5" y="5.5" width="9" height="9" rx="2" />
+                  <path d="M11 2.5H3.5A1.5 1.5 0 0 0 2 4v7.5" />
+                </svg>
+                <svg class="tick" viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M3 8.6l3.2 3.2L13 5" />
+                </svg>
+              </button>
+<pre><span class="c-com"># Bundle sizes need real build output.</span>
+<span class="c-key">- run:</span> npm run build
+
+<span class="c-key">- run:</span> npx next-doc --json &gt; next-doc-report.json
+<span class="c-key">- run:</span> npx next-doc --strict</pre>
+            </div>
+
+            <table class="facts">
+              <thead>
+                <tr>
+                  <th scope="col">Exit</th>
+                  <th scope="col">Meaning</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="ok">
+                  <td><code>0</code></td>
+                  <td>Clean, or warnings without <code>--strict</code></td>
+                </tr>
+                <tr class="no">
+                  <td><code>1</code></td>
+                  <td>Errors found</td>
+                </tr>
+                <tr class="mid">
+                  <td><code>2</code></td>
+                  <td>Config invalid</td>
+                </tr>
+                <tr class="mid">
+                  <td><code>3</code></td>
+                  <td>Not a Next.js or React project</td>
+                </tr>
+                <tr class="mid">
+                  <td><code>4</code></td>
+                  <td>Internal error</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap">
+          <div class="head">
+            <h2>withIdempotency</h2>
+            <p>The scan finds the handler. This stops the double charge.</p>
+          </div>
+
+          <div class="split">
+            <div class="snippet">
+              <span class="snippet-label">app/api/payments/route.ts</span>
+              <button
+                class="copy"
+                type="button"
+                data-copy='import { withIdempotency } from "next-doc/idempotency";'
+                aria-label="Copy the import"
+              >
+                <svg class="mark" viewBox="0 0 16 16" aria-hidden="true">
+                  <rect x="5.5" y="5.5" width="9" height="9" rx="2" />
+                  <path d="M11 2.5H3.5A1.5 1.5 0 0 0 2 4v7.5" />
+                </svg>
+                <svg class="tick" viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M3 8.6l3.2 3.2L13 5" />
+                </svg>
+              </button>
+<pre><span class="c-key">import</span> { withIdempotency } <span class="c-key">from</span> <span class="c-str">"next-doc/idempotency"</span>;
+<span class="c-key">import</span> { redisAdapter } <span class="c-key">from</span> <span class="c-str">"next-doc/idempotency/redis"</span>;
+
+<span class="c-key">export const</span> POST = withIdempotency(
+  <span class="c-key">async</span> (request) =&gt; {
+    <span class="c-key">const</span> { amount } = <span class="c-key">await</span> request.json();
+    <span class="c-key">return</span> Response.json(<span class="c-key">await</span> charge(amount));
+  },
+  { adapter: redisAdapter({ client: redis }) },
+);</pre>
+            </div>
+
+            <table class="facts">
+              <thead>
+                <tr>
+                  <th scope="col">Situation</th>
+                  <th scope="col">Response</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="ok">
+                  <td>Retry, same key</td>
+                  <td>Stored response, verbatim</td>
+                </tr>
+                <tr class="mid">
+                  <td>Still in flight</td>
+                  <td><code>409</code>, never a queue</td>
+                </tr>
+                <tr class="mid">
+                  <td>Key reused, new body</td>
+                  <td><code>422</code></td>
+                </tr>
+                <tr class="mid">
+                  <td>Storage down</td>
+                  <td><code>503</code>, fails closed</td>
+                </tr>
+                <tr class="ok">
+                  <td>Handler threw</td>
+                  <td>Key released, retry works</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="wrap">
+          <div class="head">
+            <h2>Start in a minute</h2>
+            <p>No config required. Works on Next.js, Vite, CRA, Remix, React Router, Astro.</p>
+          </div>
+
+          <ol class="steps">
+            <li>
+              <h3>Run it</h3>
+              <div class="cmd">
+                <code><span class="prompt">&gt;</span>npx next-doc</code>
+                <button class="copy" type="button" data-copy="npx next-doc" aria-label="Copy command">
+                  <svg class="mark" viewBox="0 0 16 16" aria-hidden="true">
+                    <rect x="5.5" y="5.5" width="9" height="9" rx="2" />
+                    <path d="M11 2.5H3.5A1.5 1.5 0 0 0 2 4v7.5" />
+                  </svg>
+                  <svg class="tick" viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M3 8.6l3.2 3.2L13 5" />
+                  </svg>
+                </button>
+              </div>
+              <p>Detects the framework and runs what applies.</p>
+            </li>
+
+            <li>
+              <h3>Fix the safe things</h3>
+              <div class="cmd">
+                <code><span class="prompt">&gt;</span>npx next-doc --fix</code>
+                <button
+                  class="copy"
+                  type="button"
+                  data-copy="npx next-doc --fix"
+                  aria-label="Copy command"
+                >
+                  <svg class="mark" viewBox="0 0 16 16" aria-hidden="true">
+                    <rect x="5.5" y="5.5" width="9" height="9" rx="2" />
+                    <path d="M11 2.5H3.5A1.5 1.5 0 0 0 2 4v7.5" />
+                  </svg>
+                  <svg class="tick" viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M3 8.6l3.2 3.2L13 5" />
+                  </svg>
+                </button>
+              </div>
+              <p>Writes .env.example only. It cannot touch .env or .env.production.</p>
+            </li>
+
+            <li>
+              <h3>Gate the branch</h3>
+              <div class="cmd">
+                <code><span class="prompt">&gt;</span>npx next-doc --strict</code>
+                <button
+                  class="copy"
+                  type="button"
+                  data-copy="npx next-doc --strict"
+                  aria-label="Copy command"
+                >
+                  <svg class="mark" viewBox="0 0 16 16" aria-hidden="true">
+                    <rect x="5.5" y="5.5" width="9" height="9" rx="2" />
+                    <path d="M11 2.5H3.5A1.5 1.5 0 0 0 2 4v7.5" />
+                  </svg>
+                  <svg class="tick" viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M3 8.6l3.2 3.2L13 5" />
+                  </svg>
+                </button>
+              </div>
+              <p>Add next-doc.config.json when you want a rule turned off.</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+    </main>
+
+    <div class="wrap">
+      <footer>
+        <span>MIT licensed. Built by Hope Murithi.</span>
+        <nav>
+          <a href="https://github.com/hopp/next-doc#readme">Docs</a>
+          <a href="https://github.com/hopp/next-doc">GitHub</a>
+          <a href="https://www.npmjs.com/package/next-doc">npm</a>
+          <a href="https://github.com/hopp/next-doc/issues">Report a false positive</a>
+        </nav>
+      </footer>
+    </div>
+
+    <script>
+      // One copy handler for every copyable surface. The button swaps its icon
+      // to a tick, then swaps back.
+      document.addEventListener("click", async (event) => {
+        const button = event.target.closest("[data-copy]");
+        if (!button) return;
+
+        try {
+          await navigator.clipboard.writeText(button.dataset.copy);
+        } catch {
+          // Older browsers and insecure origins have no clipboard API. Select
+          // the text instead so the keyboard shortcut still works.
+          const code = button.parentElement.querySelector("code, pre");
+          if (code) window.getSelection().selectAllChildren(code);
+          return;
+        }
+
+        button.dataset.copied = "true";
+        clearTimeout(button.timer);
+        button.timer = setTimeout(() => {
+          button.dataset.copied = "false";
+        }, 1600);
+      });
+
+      // Theme. The system setting decides until the reader picks one, then the
+      // pick is remembered. Three states: unset (system), light, dark.
+      const root = document.documentElement;
+      const toggle = document.getElementById("theme-toggle");
+      const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
+
+      let stored = null;
+      try {
+        stored = localStorage.getItem("next-doc-theme");
+      } catch {
+        stored = null;
+      }
+      if (stored === "light" || stored === "dark") root.setAttribute("data-theme", stored);
+
+      const active = () => root.getAttribute("data-theme") || (systemDark.matches ? "dark" : "light");
+
+      const paintToggle = () => {
+        const next = active() === "light" ? "dark" : "light";
+        toggle.textContent = next === "light" ? "Light" : "Dark";
+        toggle.setAttribute("aria-label", "Switch to " + next + " theme");
+      };
+
+      paintToggle();
+      systemDark.addEventListener("change", () => {
+        if (!root.hasAttribute("data-theme")) paintToggle();
+      });
+
+      toggle.addEventListener("click", () => {
+        const next = active() === "light" ? "dark" : "light";
+        root.setAttribute("data-theme", next);
+        try {
+          localStorage.setItem("next-doc-theme", next);
+        } catch {
+          // A blocked storage API is not a reason to break the toggle.
+        }
+        paintToggle();
+      });
+    </script>
+  </body>
+</html>

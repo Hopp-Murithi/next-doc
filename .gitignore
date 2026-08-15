@@ -1,0 +1,19 @@
+node_modules/
+dist/
+coverage/
+.next/
+*.tsbuildinfo
+*.log
+.DS_Store
+next-doctor-report.json
+
+# Real environment files never get committed.
+.env
+.env.*
+!.env.example
+# Fixture env files are fake by construction and are needed by the test suite.
+!test/fixtures/**/.env
+!test/fixtures/**/.env.*
+
+# npm pack output
+*.tgz

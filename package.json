@@ -1,0 +1,98 @@
+{
+  "name": "next-doc",
+  "version": "0.1.0",
+  "description": "One command. Full picture of your Next.js or React app. Audits env vars, security, performance and idempotency.",
+  "keywords": [
+    "nextjs",
+    "react",
+    "vite",
+    "cli",
+    "audit",
+    "security",
+    "performance",
+    "env",
+    "idempotency",
+    "lint"
+  ],
+  "license": "MIT",
+  "author": "Hope Murithi (Hopp)",
+  "homepage": "https://github.com/hopp/next-doc#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hopp/next-doc.git"
+  },
+  "bugs": {
+    "url": "https://github.com/hopp/next-doc/issues"
+  },
+  "type": "module",
+  "bin": {
+    "next-doc": "./dist/cli.js"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./idempotency": {
+      "types": "./dist/idempotency.d.ts",
+      "import": "./dist/idempotency.js",
+      "require": "./dist/idempotency.cjs"
+    },
+    "./idempotency/memory": {
+      "types": "./dist/idempotency-memory.d.ts",
+      "import": "./dist/idempotency-memory.js",
+      "require": "./dist/idempotency-memory.cjs"
+    },
+    "./idempotency/redis": {
+      "types": "./dist/idempotency-redis.d.ts",
+      "import": "./dist/idempotency-redis.js",
+      "require": "./dist/idempotency-redis.cjs"
+    },
+    "./idempotency/postgres": {
+      "types": "./dist/idempotency-postgres.d.ts",
+      "import": "./dist/idempotency-postgres.js",
+      "require": "./dist/idempotency-postgres.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "docs",
+    "schema.json",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=18.18.0"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "size": "node scripts/check-size.mjs",
+    "verify": "npm run typecheck && npm run build && npm run test && npm run size",
+    "prepublishOnly": "pnpm run verify && pnpm audit --prod --audit-level high"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "fast-glob": "^3.3.2",
+    "picocolors": "^1.1.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "esbuild": "^0.25.0",
+    "tsup": "^8.3.5",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "packageManager": "pnpm@10.20.0"
+}

@@ -1,0 +1,112 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://unpkg.com/next-doc/schema.json",
+  "title": "next-doc configuration",
+  "description": "Configuration for the next-doc CLI. Every key is optional. Unknown keys are rejected.",
+  "type": "object",
+  "additionalProperties": false,
+  "properties": {
+    "$schema": { "type": "string" },
+    "plugins": {
+      "description": "Plugins to run when none are named on the command line.",
+      "type": "array",
+      "minItems": 1,
+      "items": { "enum": ["env", "security", "performance", "idempotency"] }
+    },
+    "ignore": {
+      "description": "Extra glob patterns to exclude, appended to the defaults.",
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "strict": {
+      "description": "Treat warnings as errors, so they fail the run too.",
+      "type": "boolean",
+      "default": false
+    },
+    "rules": {
+      "description": "Per rule overrides, keyed by the rule code shown in every finding.",
+      "type": "object",
+      "additionalProperties": { "enum": ["off", "warn", "error"] }
+    },
+    "env": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "required": {
+          "description": "Variables that must exist. Missing ones are errors.",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "optional": {
+          "description": "Platform provided variables. Never reported as missing or unused.",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "types": {
+          "description": "Expected value shapes. Mismatches are warnings, values are never printed.",
+          "type": "object",
+          "additionalProperties": { "enum": ["string", "url", "number", "boolean", "email"] }
+        },
+        "allowPublic": {
+          "description": "Browser exposed variables that are public on purpose.",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "files": {
+          "description": "Environment files to read.",
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "security": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "requiredHeaders": {
+          "description": "Headers that must appear in your header configuration.",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "headerFiles": {
+          "description": "Extra files to search for headers, for hosts next-doc does not know about.",
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "performance": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "maxRouteKb": {
+          "description": "Budget for the JavaScript a single route loads. Measured from real build output.",
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "default": 250
+        },
+        "maxClientComponentKb": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "default": 100
+        }
+      }
+    },
+    "idempotency": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "pathPatterns": {
+          "description": "Path fragments that mark a money handling route. Replaces the default list.",
+          "type": "array",
+          "items": { "type": "string" }
+        },
+        "keywords": {
+          "description": "Extra markers that count as idempotency handling. Appended to the defaults.",
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    }
+  }
+}
