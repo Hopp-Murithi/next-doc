@@ -7,15 +7,15 @@ next-doc is a single command that audits a Next.js or React project across four 
 You do not have to install anything to try it:
 
 ```bash
-npx @hopp/next-doc
+npx @wamasoda/next-doc
 ```
 
 Add it to the project once you want it in CI:
 
 ```bash
-npm install --save-dev @hopp/next-doc
-pnpm add -D @hopp/next-doc
-yarn add -D @hopp/next-doc
+npm install --save-dev @wamasoda/next-doc
+pnpm add -D @wamasoda/next-doc
+yarn add -D @wamasoda/next-doc
 ```
 
 Requires Node 18.18 or newer.
@@ -37,7 +37,7 @@ Rules that only make sense on one framework are skipped elsewhere rather than re
 ## First run
 
 ```bash
-npx @hopp/next-doc
+npx @wamasoda/next-doc
 ```
 
 ```text
@@ -86,15 +86,15 @@ The score is `100 - (errors × 15) - (warnings × 5)` per plugin, floored at zer
 Plugin names are positional arguments, so they compose:
 
 ```bash
-npx @hopp/next-doc env
-npx @hopp/next-doc env security
-npx @hopp/next-doc idempotency --help   # lists that plugin's rules
+npx @wamasoda/next-doc env
+npx @wamasoda/next-doc env security
+npx @wamasoda/next-doc idempotency --help   # lists that plugin's rules
 ```
 
 ## Fixing things
 
 ```bash
-npx @hopp/next-doc --fix
+npx @wamasoda/next-doc --fix
 ```
 
 `--fix` only applies changes that cannot be wrong:

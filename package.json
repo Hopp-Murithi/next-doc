@@ -1,5 +1,5 @@
 {
-  "name": "@hopp/next-doc",
+  "name": "@wamasoda/next-doc",
   "version": "0.1.0",
   "description": "One command. Full picture of your Next.js or React app. Audits env vars, security, performance and idempotency.",
   "keywords": [

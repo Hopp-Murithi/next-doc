@@ -946,7 +946,7 @@
           <nav class="topnav">
             <a href="https://github.com/Hopp-Murithi/next-doc#readme">Docs</a>
             <a href="https://github.com/Hopp-Murithi/next-doc">GitHub</a>
-            <a href="https://www.npmjs.com/package/@hopp/next-doc">npm</a>
+            <a href="https://www.npmjs.com/package/@wamasoda/next-doc">npm</a>
             <button class="toggle" type="button" id="theme-toggle">Light</button>
           </nav>
         </div>
@@ -961,8 +961,8 @@
 
           <div class="cta-row rise d3">
             <div class="cmd">
-              <code><span class="prompt">&gt;</span>npx @hopp/next-doc</code>
-              <button class="copy" type="button" data-copy="npx @hopp/next-doc" aria-label="Copy command">
+              <code><span class="prompt">&gt;</span>npx @wamasoda/next-doc</code>
+              <button class="copy" type="button" data-copy="npx @wamasoda/next-doc" aria-label="Copy command">
                 <svg class="mark" viewBox="0 0 16 16" aria-hidden="true">
                   <rect x="5.5" y="5.5" width="9" height="9" rx="2" />
                   <path d="M11 2.5H3.5A1.5 1.5 0 0 0 2 4v7.5" />
@@ -997,7 +997,7 @@
           <div class="report">
             <div class="report-bar">
               <span class="dot"></span><span class="dot"></span><span class="dot"></span>
-              <span style="margin-left: 6px">npx @hopp/next-doc</span>
+              <span style="margin-left: 6px">npx @wamasoda/next-doc</span>
             </div>
             <div class="report-body">
 <pre><span class="t-head">NEXT DOC</span>
@@ -1023,7 +1023,7 @@
 <span class="t-group">IDEMPOTENCY</span>
   <span class="t-fail">✗</span> app/api/payments/route.ts has no idempotency key handling detected
       <span class="t-loc">app/api/payments/route.ts:3</span>
-      <span class="t-loc">Suggestion:</span> Wrap it with withIdempotency from @hopp/next-doc/idempotency.
+      <span class="t-loc">Suggestion:</span> Wrap it with withIdempotency from @wamasoda/next-doc/idempotency.
 
 <span class="t-head">Score: 61</span><span class="t-loc">/100</span>
 <span class="t-meta">4 errors, 3 warnings, 6 passed</span>
@@ -1105,7 +1105,7 @@ Run <span class="t-accent">next-doc --fix</span> to apply 2 automatic fixes.</pr
               <button
                 class="copy"
                 type="button"
-                data-copy="- run: npm run build&#10;- run: npx @hopp/next-doc --json > next-doc-report.json&#10;- run: npx @hopp/next-doc --strict"
+                data-copy="- run: npm run build&#10;- run: npx @wamasoda/next-doc --json > next-doc-report.json&#10;- run: npx @wamasoda/next-doc --strict"
                 aria-label="Copy workflow steps"
               >
                 <svg class="mark" viewBox="0 0 16 16" aria-hidden="true">
@@ -1119,8 +1119,8 @@ Run <span class="t-accent">next-doc --fix</span> to apply 2 automatic fixes.</pr
 <pre><span class="c-com"># Bundle sizes need real build output.</span>
 <span class="c-key">- run:</span> npm run build
 
-<span class="c-key">- run:</span> npx @hopp/next-doc --json &gt; next-doc-report.json
-<span class="c-key">- run:</span> npx @hopp/next-doc --strict</pre>
+<span class="c-key">- run:</span> npx @wamasoda/next-doc --json &gt; next-doc-report.json
+<span class="c-key">- run:</span> npx @wamasoda/next-doc --strict</pre>
             </div>
 
             <table class="facts">
@@ -1170,7 +1170,7 @@ Run <span class="t-accent">next-doc --fix</span> to apply 2 automatic fixes.</pr
               <button
                 class="copy"
                 type="button"
-                data-copy='import { withIdempotency } from "@hopp/next-doc/idempotency";'
+                data-copy='import { withIdempotency } from "@wamasoda/next-doc/idempotency";'
                 aria-label="Copy the import"
               >
                 <svg class="mark" viewBox="0 0 16 16" aria-hidden="true">
@@ -1181,8 +1181,8 @@ Run <span class="t-accent">next-doc --fix</span> to apply 2 automatic fixes.</pr
                   <path d="M3 8.6l3.2 3.2L13 5" />
                 </svg>
               </button>
-<pre><span class="c-key">import</span> { withIdempotency } <span class="c-key">from</span> <span class="c-str">"@hopp/next-doc/idempotency"</span>;
-<span class="c-key">import</span> { redisAdapter } <span class="c-key">from</span> <span class="c-str">"@hopp/next-doc/idempotency/redis"</span>;
+<pre><span class="c-key">import</span> { withIdempotency } <span class="c-key">from</span> <span class="c-str">"@wamasoda/next-doc/idempotency"</span>;
+<span class="c-key">import</span> { redisAdapter } <span class="c-key">from</span> <span class="c-str">"@wamasoda/next-doc/idempotency/redis"</span>;
 
 <span class="c-key">export const</span> POST = withIdempotency(
   <span class="c-key">async</span> (request) =&gt; {
@@ -1238,8 +1238,8 @@ Run <span class="t-accent">next-doc --fix</span> to apply 2 automatic fixes.</pr
             <li>
               <h3>Run it</h3>
               <div class="cmd">
-                <code><span class="prompt">&gt;</span>npx @hopp/next-doc</code>
-                <button class="copy" type="button" data-copy="npx @hopp/next-doc" aria-label="Copy command">
+                <code><span class="prompt">&gt;</span>npx @wamasoda/next-doc</code>
+                <button class="copy" type="button" data-copy="npx @wamasoda/next-doc" aria-label="Copy command">
                   <svg class="mark" viewBox="0 0 16 16" aria-hidden="true">
                     <rect x="5.5" y="5.5" width="9" height="9" rx="2" />
                     <path d="M11 2.5H3.5A1.5 1.5 0 0 0 2 4v7.5" />
@@ -1255,11 +1255,11 @@ Run <span class="t-accent">next-doc --fix</span> to apply 2 automatic fixes.</pr
             <li>
               <h3>Fix the safe things</h3>
               <div class="cmd">
-                <code><span class="prompt">&gt;</span>npx @hopp/next-doc --fix</code>
+                <code><span class="prompt">&gt;</span>npx @wamasoda/next-doc --fix</code>
                 <button
                   class="copy"
                   type="button"
-                  data-copy="npx @hopp/next-doc --fix"
+                  data-copy="npx @wamasoda/next-doc --fix"
                   aria-label="Copy command"
                 >
                   <svg class="mark" viewBox="0 0 16 16" aria-hidden="true">
@@ -1277,11 +1277,11 @@ Run <span class="t-accent">next-doc --fix</span> to apply 2 automatic fixes.</pr
             <li>
               <h3>Gate the branch</h3>
               <div class="cmd">
-                <code><span class="prompt">&gt;</span>npx @hopp/next-doc --strict</code>
+                <code><span class="prompt">&gt;</span>npx @wamasoda/next-doc --strict</code>
                 <button
                   class="copy"
                   type="button"
-                  data-copy="npx @hopp/next-doc --strict"
+                  data-copy="npx @wamasoda/next-doc --strict"
                   aria-label="Copy command"
                 >
                   <svg class="mark" viewBox="0 0 16 16" aria-hidden="true">
@@ -1306,7 +1306,7 @@ Run <span class="t-accent">next-doc --fix</span> to apply 2 automatic fixes.</pr
         <nav>
           <a href="https://github.com/Hopp-Murithi/next-doc#readme">Docs</a>
           <a href="https://github.com/Hopp-Murithi/next-doc">GitHub</a>
-          <a href="https://www.npmjs.com/package/@hopp/next-doc">npm</a>
+          <a href="https://www.npmjs.com/package/@wamasoda/next-doc">npm</a>
           <a href="https://github.com/Hopp-Murithi/next-doc/issues">Report a false positive</a>
         </nav>
       </footer>

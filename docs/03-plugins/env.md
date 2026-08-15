@@ -1,7 +1,7 @@
 # env plugin
 
 ```bash
-npx @hopp/next-doc env
+npx @wamasoda/next-doc env
 ```
 
 ## What it checks
