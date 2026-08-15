@@ -45,5 +45,5 @@ First release.
 - **Documented exit codes** 0 to 4 for CI.
 - Documentation set in `docs/`, and a one page site in `website/`.
 
-[Unreleased]: https://github.com/hopp/next-doc/compare/v0.1.0...HEAD
-[0.1.0]: https://github.com/hopp/next-doc/releases/tag/v0.1.0
+[Unreleased]: https://github.com/Hopp-Murithi/next-doc/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/Hopp-Murithi/next-doc/releases/tag/v0.1.0

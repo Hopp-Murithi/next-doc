@@ -127,7 +127,7 @@ describe("the fixer", () => {
     const dir = await tempProject({
       "package.json": JSON.stringify({ dependencies: { next: "15.0.0", react: "19.0.0" } }),
       "next.config.js": "module.exports = {};",
-      ".env": "DATABASE_URL=postgresql://localhost/db\nSTRIPE_SECRET_KEY=sk_live_realvaluehere000000\n",
+      ".env": "DATABASE_URL=postgresql://localhost/db\nSTRIPE_SECRET_KEY=sk_live_NOT_A_REAL_VALUE\n",
       ".env.local": "DATABASE_URL=postgresql://localhost/dev\n",
     });
 
@@ -137,10 +137,10 @@ describe("the fixer", () => {
     expect(example).toContain("DATABASE_URL=");
     expect(example).toContain("STRIPE_SECRET_KEY=");
     // Placeholders only. A real value must never be copied into the template.
-    expect(example).not.toContain("sk_live_realvaluehere000000");
+    expect(example).not.toContain("sk_live_NOT_A_REAL_VALUE");
     expect(example).not.toContain("postgresql://localhost/db");
 
-    expect(await fs.readFile(path.join(dir, ".env"), "utf8")).toContain("sk_live_realvaluehere000000");
+    expect(await fs.readFile(path.join(dir, ".env"), "utf8")).toContain("sk_live_NOT_A_REAL_VALUE");
     expect(fixes.every((fix) => fix.file === ".env.example")).toBe(true);
   });
 });

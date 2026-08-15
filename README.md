@@ -1,10 +1,19 @@
+<div align="center">
+
 # next-doc
 
-[![npm](https://img.shields.io/npm/v/next-doc.svg)](https://www.npmjs.com/package/next-doc)
-[![CI](https://github.com/hopp/next-doc/actions/workflows/ci.yml/badge.svg)](https://github.com/hopp/next-doc/actions/workflows/ci.yml)
-[![license](https://img.shields.io/npm/l/next-doc.svg)](LICENSE)
-
 **One command. Full picture of your Next.js or React app.**
+
+[![npm](https://img.shields.io/npm/v/next-doc.svg?color=0c7c88)](https://www.npmjs.com/package/next-doc)
+[![CI](https://github.com/Hopp-Murithi/next-doc/actions/workflows/ci.yml/badge.svg)](https://github.com/Hopp-Murithi/next-doc/actions/workflows/ci.yml)
+[![node](https://img.shields.io/node/v/next-doc.svg?color=0c7c88)](https://nodejs.org)
+[![license](https://img.shields.io/npm/l/next-doc.svg?color=0c7c88)](LICENSE)
+
+[Website](https://next-doc-taupe.vercel.app) · [Documentation](docs/01-getting-started.md) · [Rule reference](#rule-reference) · [Changelog](CHANGELOG.md)
+
+</div>
+
+---
 
 Audits environment variables, security, performance and idempotency, then tells you exactly what to change. No config needed, no account, no telemetry, no network calls.
 
@@ -44,18 +53,7 @@ Score: 61/100
 
 ## Contents
 
-- [Install](#install)
-- [What it checks](#what-it-checks)
-- [Works with](#works-with)
-- [Commands and flags](#commands-and-flags)
-- [Exit codes](#exit-codes)
-- [Reading the output](#reading-the-output)
-- [In CI](#in-ci)
-- [The idempotency runtime](#the-idempotency-runtime)
-- [Configuration](#configuration)
-- [Suppressing a finding](#suppressing-a-finding)
-- [Notes worth knowing](#notes-worth-knowing)
-- [Full documentation](#full-documentation)
+[Install](#install) · [What it checks](#what-it-checks) · [Works with](#works-with) · [Commands](#commands) · [Flags](#flags) · [Exit codes](#exit-codes) · [Reading the output](#reading-the-output) · [In CI](#in-ci) · [Idempotency runtime](#idempotency-runtime) · [Configuration](#configuration) · [Rule reference](#rule-reference) · [Notes worth knowing](#notes-worth-knowing) · [Documentation](#documentation)
 
 ## Install
 
@@ -84,15 +82,23 @@ Requires Node 18.18 or newer.
 | **performance** | Route JavaScript over budget, `"use client"` with no interactivity, unoptimized images and fonts, server fetches with no caching intent, overlapping dependencies |
 | **idempotency** | Payment, checkout and webhook routes with no duplicate request protection, keys read but never persisted |
 
-Plus a runtime library that fixes the last one: [`withIdempotency`](docs/05-idempotency-runtime.md).
+23 rules in total. The fourth plugin also ships the runtime library that fixes what it finds: [`withIdempotency`](#idempotency-runtime).
 
 ## Works with
 
-Next.js (App and Pages Router), React on Vite, Create React App, Remix, React Router framework mode, Astro with React, and plain React.
+| Project | Detected by | Notes |
+| --- | --- | --- |
+| Next.js, App or Pages Router | `next.config.*`, `next` dependency | Every rule runs |
+| React on Vite | `vite.config.*` plus `react` | `VITE_` prefixes, `import.meta.env` |
+| Create React App | `react-scripts` | `REACT_APP_` prefixes |
+| Remix | `remix.config.*` | Server rules run |
+| React Router framework mode | `react-router.config.*` | Server rules run |
+| Astro with React | `astro.config.*` | `PUBLIC_` prefixes |
+| Plain React | `react` dependency | Client side rules only |
 
-Rules that only apply to one framework are skipped elsewhere rather than reported as failures. A Vite app is checked for `VITE_` prefix leaks, `import.meta.env` usage and image dimensions, never for `next/image`.
+Rules that only apply to one framework are skipped elsewhere rather than reported as failures. A Vite app is checked for `VITE_` prefix leaks and image dimensions, never for `next/image`.
 
-## Commands and flags
+## Commands
 
 ```bash
 npx next-doc                    # every plugin
@@ -102,7 +108,9 @@ npx next-doc init               # create next-doc.config.json
 npx next-doc idempotency --help # list a plugin's rules
 ```
 
-Plugin names are positional arguments, so they compose: `env security idempotency` reads as one sentence and runs as one pass.
+Plugin names are positional arguments, so they compose. `env security idempotency` reads as one sentence and runs as one pass.
+
+## Flags
 
 | Flag | What it does |
 | --- | --- |
@@ -133,7 +141,7 @@ Plugin names are positional arguments, so they compose: `env security idempotenc
 - `△` **warning**, worth fixing, does not fail the run unless you pass `--strict`.
 - `✗` **error**, fails the run with exit code 1.
 
-Every warning and error carries a file reference where one exists, plus one line saying what to change. A finding with no suggestion is a bug, and a test enforces it.
+Every warning and error carries a file reference where one exists, plus one line saying what to change. A finding with no suggestion is a bug, and a test enforces it. Icons fall back to plain ASCII outside a TTY, so CI logs stay readable.
 
 The score is `100 - (errors × 15) - (warnings × 5)` per plugin, floored at zero, then averaged across the plugins that ran. It is a trend line for your own project, not a league table.
 
@@ -149,7 +157,7 @@ The first command always succeeds, so you keep the artifact even on a failing ru
 
 Full workflow, PR comments, GitLab, and a strategy for adopting this on an existing codebase without drowning in findings: [CI integration](docs/04-ci-integration.md).
 
-## The idempotency runtime
+## Idempotency runtime
 
 The scan finds handlers that can charge a customer twice. This fixes them:
 
@@ -181,15 +189,20 @@ Server Actions have no `Request`, so they use the runner form:
 const idempotency = createIdempotency({ adapter: redisAdapter({ client: redis }) });
 
 export async function checkout(formData: FormData) {
-  return idempotency.run(String(formData.get("operationId")), async () => {
-    return charge(Number(formData.get("amount")));
-  }, { amount: formData.get("amount") });
+  const amount = Number(formData.get("amount"));
+  return idempotency.run(String(formData.get("operationId")), () => charge(amount), { amount });
 }
 ```
 
-Works with Next.js Route Handlers and Server Actions, Remix, React Router, Hono, Cloudflare Workers, Deno and Bun. Zero dependencies, about 2.3kb minified and gzipped, adapters as separate entry points so you only ship the one you import.
+Works with Next.js Route Handlers and Server Actions, Remix, React Router, Hono, Cloudflare Workers, Deno and Bun. Zero dependencies, 2.25kb minified and gzipped, adapters as separate entry points so you only ship the one you import.
 
-Full API, adapters and edge case behaviour: [Idempotency runtime](docs/05-idempotency-runtime.md).
+| Adapter | Import | Use for |
+| --- | --- | --- |
+| Memory | `next-doc/idempotency/memory` | Development and tests. One process only |
+| Redis | `next-doc/idempotency/redis` | Production. ioredis, node-redis v4 or `@upstash/redis` |
+| Postgres | `next-doc/idempotency/postgres` | Production. Any node-postgres style client |
+
+Full API, edge cases and the adapter contract: [Idempotency runtime](docs/05-idempotency-runtime.md).
 
 ## Configuration
 
@@ -197,6 +210,7 @@ Optional. Run `npx next-doc init` for a starting point.
 
 ```json
 {
+  "$schema": "https://unpkg.com/next-doc/schema.json",
   "plugins": ["env", "security", "performance", "idempotency"],
   "ignore": ["**/generated/**"],
   "strict": false,
@@ -215,9 +229,9 @@ Optional. Run `npx next-doc init` for a starting point.
 }
 ```
 
-Unknown keys are rejected rather than ignored, so a typo cannot leave a check quietly disabled. Every option: [Configuration](docs/02-configuration.md).
+Unknown keys are rejected rather than ignored, so a typo cannot leave a check quietly disabled. The `$schema` line gives you autocomplete and inline validation in any editor. Every option: [Configuration](docs/02-configuration.md).
 
-## Suppressing a finding
+Suppress a single finding on the flagged line or the line above it:
 
 ```ts
 // next-doc-ignore idempotency
@@ -227,7 +241,55 @@ export async function POST(request: Request) {}
 export async function PUT(request: Request) {}
 ```
 
-On the flagged line or the line directly above it. A bare `next-doc-ignore` suppresses everything on that line.
+## Rule reference
+
+Rule codes are a public API. CI pipelines allowlist them and documentation links to them, so renaming one is a breaking change.
+
+### env
+
+| Code | Default | Checks |
+| --- | --- | --- |
+| `ENV_MISSING_REQUIRED` | error | A variable listed in `env.required` is defined nowhere |
+| `ENV_MISSING_VAR` | warning | Code reads a variable no environment file defines |
+| `ENV_PUBLIC_SECRET` | error | A browser exposed variable named like a credential |
+| `ENV_SECRET_IN_EXAMPLE` | error | A real looking credential committed in `.env.example` |
+| `ENV_TYPE_MISMATCH` | warning | A value does not match its declared type |
+| `ENV_FILE_DRIFT` | warning, fixable | A key is in `.env` but missing from `.env.example` |
+| `ENV_EXAMPLE_MISSING` | warning, fixable | There is no `.env.example` at all |
+| `ENV_UNUSED_VAR` | warning | A variable is defined but never read |
+
+### security
+
+| Code | Default | Checks |
+| --- | --- | --- |
+| `SECURITY_MISSING_HEADER` | warning, sometimes fixable | Configured security headers are not set anywhere |
+| `SECURITY_NO_CSP` | warning | No Content Security Policy found |
+| `SECURITY_WEAK_CSP` | warning | The policy allows `unsafe-inline` or `unsafe-eval` |
+| `SECURITY_PUBLIC_SECRET` | error | Same check as `ENV_PUBLIC_SECRET`, run here too |
+| `SECURITY_HARDCODED_SECRET` | error | A vendor credential format pasted into source |
+| `SECURITY_SERVER_CODE_IN_CLIENT` | error | A server package reachable from the client bundle |
+| `SECURITY_WEBHOOK_UNVERIFIED` | error | A webhook handler with no signature verification |
+| `SECURITY_MISSING_CSRF` | warning | A cookie authenticated mutation with no origin check |
+| `SECURITY_UNSAFE_REDIRECT` | error | A redirect target taken from the request unvalidated |
+
+### performance
+
+| Code | Default | Checks |
+| --- | --- | --- |
+| `PERF_LARGE_ROUTE` | error | A route ships more JavaScript than the budget |
+| `PERF_NO_BUILD_OUTPUT` | warning | No build output, so nothing was measured |
+| `PERF_UNNECESSARY_USE_CLIENT` | warning | A Client Component with no browser only feature |
+| `PERF_UNCACHED_FETCH` | warning | A server fetch with no caching intent declared |
+| `PERF_UNOPTIMIZED_IMAGE` | warning | A raw `img`, or one with no dimensions |
+| `PERF_FONT_LOADING` | warning | A render blocking webfont |
+| `PERF_DUPLICATE_DEPS` | warning | Two dependencies doing the same job |
+
+### idempotency
+
+| Code | Default | Checks |
+| --- | --- | --- |
+| `IDEM_UNPROTECTED_ROUTE` | error | A money handling mutation with no idempotency handling |
+| `IDEM_KEY_NOT_PERSISTED` | warning | A key is read but never stored, so nothing is deduplicated |
 
 ## Notes worth knowing
 
@@ -237,11 +299,9 @@ On the flagged line or the line directly above it. A bare `next-doc-ignore` supp
 
 **Bundle sizes are measured, never estimated.** With no build output the performance plugin says so and stops, rather than guessing a compiled size from source file size.
 
-**Some rules are heuristics, and say so.** The idempotency scan reports a "possible missing idempotency protection", not a proven one. That is why the ignore comment exists. False positives are treated as bugs, so please report them.
+**Some rules are heuristics, and say so.** The idempotency scan reports a "possible missing idempotency protection", not a proven one. That is what the ignore comment is for. False positives are treated as bugs, so please report them.
 
 **Warnings do not fail your build by default.** `--strict` is opt in and is expected to stay that way. A tool that fails CI on warnings by default gets uninstalled the first time it blocks an unrelated release.
-
-**Rule codes are a public API.** CI pipelines allowlist them and docs link to them, so renaming one is a breaking change. The same goes for the `--json` schema, which carries a `schemaVersion`.
 
 **Programmatic use.**
 
@@ -251,19 +311,26 @@ import { runAudit } from "next-doc";
 const { report, exitCode } = await runAudit({ cwd: process.cwd(), plugins: ["security"] });
 ```
 
-## Full documentation
+The report types are exported too: `RunReport`, `PluginResult`, `Finding`.
+
+## Documentation
 
 Shipped inside the package, and readable on GitHub:
 
-- [Getting started](docs/01-getting-started.md), install, first run, reading the output
-- [Configuration](docs/02-configuration.md), every option in the config file
-- Plugins: [env](docs/03-plugins/env.md), [security](docs/03-plugins/security.md), [performance](docs/03-plugins/performance.md), [idempotency](docs/03-plugins/idempotency.md)
-- [CI integration](docs/04-ci-integration.md), workflows, exit codes, PR comments
-- [Idempotency runtime](docs/05-idempotency-runtime.md), the full `withIdempotency` API
-- [JSON schema](docs/06-json-schema.md), the machine readable contract
-- [FAQ](docs/07-faq.md)
-- [Contributing](docs/08-contributing.md)
+| Page | Covers |
+| --- | --- |
+| [Getting started](docs/01-getting-started.md) | Install, first run, reading the output |
+| [Configuration](docs/02-configuration.md) | Every option in the config file |
+| [env](docs/03-plugins/env.md) | Every env rule, with passing and failing examples |
+| [security](docs/03-plugins/security.md) | Every security rule, and what each one prevents |
+| [performance](docs/03-plugins/performance.md) | Every performance rule and where the numbers come from |
+| [idempotency](docs/03-plugins/idempotency.md) | The static scan, and how to tune it |
+| [CI integration](docs/04-ci-integration.md) | Workflows, exit codes, PR comments, adoption |
+| [Idempotency runtime](docs/05-idempotency-runtime.md) | The full `withIdempotency` API |
+| [JSON schema](docs/06-json-schema.md) | The machine readable contract |
+| [FAQ](docs/07-faq.md) | The questions people actually ask |
+| [Contributing](docs/08-contributing.md) | Adding a rule, testing it, releasing |
 
 ## License
 
-MIT, by Hope Murithi.
+MIT, by [wamasoda](https://github.com/Hopp-Murithi).

@@ -16,13 +16,13 @@
   ],
   "license": "MIT",
   "author": "Hope Murithi (Hopp)",
-  "homepage": "https://github.com/hopp/next-doc#readme",
+  "homepage": "https://github.com/Hopp-Murithi/next-doc#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hopp/next-doc.git"
+    "url": "git+https://github.com/Hopp-Murithi/next-doc.git"
   },
   "bugs": {
-    "url": "https://github.com/hopp/next-doc/issues"
+    "url": "https://github.com/Hopp-Murithi/next-doc/issues"
   },
   "type": "module",
   "bin": {
