@@ -66,6 +66,7 @@ export const unprotectedMutationRoute: Rule = {
 
     for (const file of sources) {
       if (file.isClient) continue;
+      if (TEST_PATH.test(file.path)) continue;
       const matched = matchesMoneyPath(file.path, pathPatterns);
       if (!matched) continue;
 
@@ -112,6 +113,9 @@ export const unprotectedMutationRoute: Rule = {
  * A key read from the request is only half the job. Reading it and never
  * storing it deduplicates nothing, so this rule looks for storage nearby.
  */
+/** Tests name and pass idempotency keys constantly. That is not a finding. */
+const TEST_PATH = /(^|\/)(__tests__|__mocks__|tests?|e2e|cypress|playwright|spec|fixtures?)(\/|$)|\.(test|spec)\.[cm]?[jt]sx?$/;
+
 export const keyReadButNotStored: Rule = {
   code: "IDEM_KEY_NOT_PERSISTED",
   title: "Idempotency keys are actually persisted",
@@ -125,6 +129,7 @@ export const keyReadButNotStored: Rule = {
 
     for (const file of sources) {
       if (file.isClient) continue;
+      if (TEST_PATH.test(file.path)) continue;
       if (!readsKey.test(file.text)) continue;
       if (persists.test(file.text)) continue;
 

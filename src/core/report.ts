@@ -134,6 +134,210 @@ function scoreColor(score: number): string {
   return c.red(text);
 }
 
+/**
+ * The default view once a project has more findings than anyone wants to read
+ * in a terminal. Counts per plugin, the rules doing the most damage, and the
+ * files carrying the most findings. The detail goes to a file.
+ */
+export function formatTerminalSummary(
+  report: RunReport,
+  opts: { reportPath: string | null; fix: boolean },
+): string {
+  const lines: string[] = [];
+  const meta = [
+    report.project.frameworkLabel,
+    report.project.typescript ? "TypeScript" : "JavaScript",
+    report.project.router !== "none" ? routerLabel(report.project.router) : null,
+  ].filter(Boolean) as string[];
+
+  const { errors, warnings, passed, fixable, score } = report.summary;
+
+  lines.push("");
+  lines.push(c.bold(c.cyan("NEXT DOC")));
+  lines.push(c.dim(meta.join("  ")));
+  lines.push("");
+  lines.push(
+    `  ${c.red(`${icons.fail} ${errors} error${errors === 1 ? "" : "s"}`)}   ` +
+      `${c.yellow(`${icons.warn} ${warnings} warning${warnings === 1 ? "" : "s"}`)}   ` +
+      `${c.green(`${icons.pass} ${passed} passed`)}   ` +
+      `${c.dim("Score")} ${scoreColor(score)}${c.dim("/100")}`,
+  );
+  lines.push("");
+
+  // Per plugin totals.
+  for (const result of report.results) {
+    const e = result.findings.filter((f) => f.severity === "error").length;
+    const w = result.findings.filter((f) => f.severity === "warning").length;
+    const title = (PLUGIN_TITLES[result.plugin] ?? result.plugin).padEnd(14);
+    const counts = e === 0 && w === 0 ? c.green("clean") : `${e} error${e === 1 ? "" : "s"}, ${w} warning${w === 1 ? "" : "s"}`;
+    lines.push(`  ${c.bold(title)} ${c.dim(counts)}`);
+  }
+
+  const actionable = report.results
+    .flatMap((r) => r.findings)
+    .filter((f) => f.severity !== "pass");
+
+  if (actionable.length > 0) {
+    const byCode = new Map<string, number>();
+    for (const f of actionable) byCode.set(f.code, (byCode.get(f.code) ?? 0) + 1);
+    const topCodes = [...byCode.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+    lines.push("");
+    lines.push(c.bold("  Most common"));
+    for (const [code, count] of topCodes) {
+      lines.push(`    ${c.dim(String(count).padStart(5))}  ${code}`);
+    }
+
+    const byFile = new Map<string, number>();
+    for (const f of actionable) {
+      if (!f.file) continue;
+      byFile.set(f.file, (byFile.get(f.file) ?? 0) + 1);
+    }
+    const topFiles = [...byFile.entries()].sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+    if (topFiles.length > 0) {
+      lines.push("");
+      lines.push(c.bold("  Worst files"));
+      for (const [file, count] of topFiles) {
+        lines.push(`    ${c.dim(String(count).padStart(5))}  ${file}`);
+      }
+    }
+  }
+
+  lines.push("");
+  if (opts.reportPath) {
+    lines.push(`  ${c.green("Full report:")} ${c.bold(opts.reportPath)}`);
+    lines.push(c.dim("  Open it for every finding, grouped by plugin and rule."));
+  }
+  if (!opts.fix && fixable > 0) {
+    lines.push(c.dim(`  Run next-doc --fix to apply ${fixable} automatic fix${fixable === 1 ? "" : "es"}.`));
+  }
+  lines.push(c.dim("  Run next-doc --full to print everything here instead."));
+  lines.push("");
+
+  return lines.join("\n");
+}
+
+/**
+ * The written report. Grouped by plugin, then by rule, so a thousand instances
+ * of one rule read as one section with a file list rather than a thousand
+ * repeated paragraphs.
+ */
+export function formatMarkdownReport(report: RunReport, opts: { command: string } = { command: "next-doc" }): string {
+  const lines: string[] = [];
+  const { errors, warnings, passed, fixable, score } = report.summary;
+  const stamp = new Date().toISOString().replace("T", " ").slice(0, 16);
+
+  lines.push("# Next Doc report");
+  lines.push("");
+  lines.push(`Generated ${stamp} UTC by \`${opts.command}\``);
+  lines.push("");
+  lines.push(`**Score ${score}/100**`);
+  lines.push("");
+  lines.push("| | Count |");
+  lines.push("| --- | --- |");
+  lines.push(`| Errors | ${errors} |`);
+  lines.push(`| Warnings | ${warnings} |`);
+  lines.push(`| Passed | ${passed} |`);
+  lines.push(`| Fixable | ${fixable} |`);
+  lines.push("");
+  lines.push(`Project: ${report.project.frameworkLabel}, ${report.project.typescript ? "TypeScript" : "JavaScript"}.`);
+  lines.push("");
+
+  // Contents, so a long report stays navigable.
+  lines.push("## Contents");
+  lines.push("");
+  for (const result of report.results) {
+    const e = result.findings.filter((f) => f.severity === "error").length;
+    const w = result.findings.filter((f) => f.severity === "warning").length;
+    const title = PLUGIN_TITLES[result.plugin] ?? result.plugin;
+    lines.push(`- [${title}](#${title.toLowerCase()}) ${e} errors, ${w} warnings`);
+  }
+  lines.push("");
+
+  for (const result of report.results) {
+    const title = PLUGIN_TITLES[result.plugin] ?? result.plugin;
+    lines.push("---");
+    lines.push("");
+    lines.push(`## ${title}`);
+    lines.push("");
+
+    const actionable = result.findings.filter((f) => f.severity !== "pass");
+    const passes = result.findings.filter((f) => f.severity === "pass");
+
+    if (actionable.length === 0) {
+      lines.push("Nothing to fix here.");
+      lines.push("");
+      for (const p of passes) lines.push(`- ${p.message}`);
+      lines.push("");
+      continue;
+    }
+
+    // Group by rule code, worst first.
+    const groups = new Map<string, Finding[]>();
+    for (const f of actionable) {
+      const list = groups.get(f.code) ?? [];
+      list.push(f);
+      groups.set(f.code, list);
+    }
+
+    const ordered = [...groups.entries()].sort((a, b) => {
+      const sev = (g: Finding[]) => (g.some((f) => f.severity === "error") ? 0 : 1);
+      return sev(a[1]) - sev(b[1]) || b[1].length - a[1].length;
+    });
+
+    for (const [code, findings] of ordered) {
+      const severity = findings.some((f) => f.severity === "error") ? "Error" : "Warning";
+      lines.push(`### \`${code}\``);
+      lines.push("");
+      lines.push(`${severity}, ${findings.length} occurrence${findings.length === 1 ? "" : "s"}.`);
+      lines.push("");
+
+      const suggestion = findings.find((f) => f.suggestion)?.suggestion;
+      if (suggestion) {
+        lines.push(`> ${suggestion}`);
+        lines.push("");
+      }
+
+      const located = findings.filter((f) => f.file);
+      if (located.length > 0) {
+        lines.push("| Location | Finding |");
+        lines.push("| --- | --- |");
+        for (const f of located.slice(0, 200)) {
+          const loc = f.line ? `${f.file}:${f.line}` : f.file!;
+          lines.push(`| \`${loc}\` | ${escapePipes(shorten(f.message))} |`);
+        }
+        if (located.length > 200) {
+          lines.push(`| ... | ${located.length - 200} more, use --json for the complete list |`);
+        }
+      } else {
+        for (const f of findings) lines.push(`- ${escapePipes(f.message)}`);
+      }
+      lines.push("");
+    }
+
+    if (passes.length > 0) {
+      lines.push("<details><summary>Passed checks</summary>");
+      lines.push("");
+      for (const p of passes) lines.push(`- ${p.message}`);
+      lines.push("");
+      lines.push("</details>");
+      lines.push("");
+    }
+  }
+
+  lines.push("---");
+  lines.push("");
+  lines.push(`<sub>${PACKAGE_NAME} v${VERSION}. Suppress a finding with a \`next-doc-ignore\` comment.</sub>`);
+  lines.push("");
+  return lines.join("\n");
+}
+
+/** Trims the file path prefix that the location column already shows. */
+function shorten(message: string): string {
+  return message.replace(/^\S+\.(tsx?|jsx?|mjs|cjs)\s+/, "");
+}
+
 export function formatJson(report: RunReport): string {
   return `${JSON.stringify(report, null, 2)}\n`;
 }

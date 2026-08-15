@@ -9,6 +9,37 @@ code or removing a JSON field is a breaking change.
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-08-15
+
+Making the output usable on a real codebase. A first run on a large app
+printed over two thousand lines, which is not a report.
+
+### Added
+
+- **`--report [path]`** writes the full findings to a markdown file, default
+  `next-doc-report.md`, grouped by plugin then by rule code, with one
+  suggestion per rule instead of one per occurrence.
+- **`--full`** prints every finding in the terminal regardless of count.
+- **`--no-report`** never writes a file.
+
+### Changed
+
+- Past 30 findings the terminal shows a summary instead of every finding:
+  totals per plugin, the five most common rules, the five worst files, and a
+  pointer to the written report. Under 30 findings nothing changes.
+- `PERF_LARGE_ROUTE` reports the ten worst routes and a count of the rest,
+  rather than one error per route. An app with 418 routes over budget was
+  producing 418 errors.
+- Default ignores now cover generated output that was being scanned as if it
+  were source: `.next-*`, `.open-next`, `.vercel`, `.netlify`, `.wrangler`,
+  `.cache`, `.output`, `.svelte-kit`, `out`, `public`, `storybook-static`, and
+  minified or bundled files.
+- The idempotency rules skip test files. Tests name idempotency keys
+  constantly, and that is not a finding.
+
+Together these took a real project from 761 errors and 1575 warnings to 32
+errors and 368 warnings, with nothing real removed.
+
 ## [0.1.0] - 2026-08-15
 
 First release.

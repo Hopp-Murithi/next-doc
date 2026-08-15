@@ -1,5 +1,7 @@
 import { execFile } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
+import fs from "node:fs/promises";
+import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { promisify } from "node:util";
@@ -86,6 +88,41 @@ describe("cli", () => {
 
     expect(result.stdout).toContain("## Next Doc report");
     expect(result.stdout).toContain("| FAIL | `SECURITY_WEBHOOK_UNVERIFIED`");
+  });
+
+  it("writes a grouped markdown report and keeps the terminal short", async () => {
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "next-doc-report-"));
+    const target = path.join(dir, "report.md");
+
+    const result = await nextDoc(["--cwd", fixture("next-bad"), "--report", target]);
+    const report = await fs.readFile(target, "utf8");
+
+    // The terminal gets a summary and a pointer, not every finding.
+    expect(result.stdout).toContain("Full report:");
+    expect(result.stdout).toContain("Most common");
+    expect(result.stdout).not.toContain("Suggestion:");
+
+    // The file gets the detail, grouped by plugin and then by rule code.
+    expect(report).toContain("# Next Doc report");
+    expect(report).toContain("## Contents");
+    expect(report).toContain("## SECURITY");
+    expect(report).toContain("### `SECURITY_WEBHOOK_UNVERIFIED`");
+    expect(report).toContain("| Location | Finding |");
+
+    // One suggestion per rule, not one per occurrence. ENV_UNUSED_VAR fires
+    // twice in this fixture, so a per-occurrence report would repeat itself.
+    expect(report).toContain("Warning, 2 occurrences.");
+    expect(report).toContain("Remove NEXT_PUBLIC_SITE_URL if it is dead");
+    expect(report).not.toContain("Remove UNUSED_LEGACY_FLAG if it is dead");
+
+    await fs.rm(dir, { recursive: true, force: true });
+  });
+
+  it("prints everything when asked, however long it is", async () => {
+    const result = await nextDoc(["--cwd", fixture("next-bad"), "--full"]);
+
+    expect(result.stdout).toContain("Suggestion:");
+    expect(result.stdout).not.toContain("Full report:");
   });
 
   it("lists a plugin's rules with <plugin> --help", async () => {

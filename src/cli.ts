@@ -4,7 +4,14 @@ import { Command } from "commander";
 import { runAudit } from "./index.js";
 import { getPlugin } from "./core/plugin.js";
 import type { PluginName } from "./core/types.js";
-import { formatJson, formatMarkdown, formatScoreOnly, formatTerminal } from "./core/report.js";
+import {
+  formatJson,
+  formatMarkdown,
+  formatMarkdownReport,
+  formatScoreOnly,
+  formatTerminal,
+  formatTerminalSummary,
+} from "./core/report.js";
 import { NextDocError, EXIT } from "./core/exit-codes.js";
 import { c, configureOutput, out, spinner } from "./core/logger.js";
 import { CONFIG_FILENAMES, initialConfig } from "./core/config.js";
@@ -22,7 +29,16 @@ interface CliFlags {
   ignore?: string[];
   color?: boolean;
   cwd?: string;
+  report?: string | boolean;
+  full?: boolean;
 }
+
+/**
+ * Above this many findings the terminal gets a summary and the detail goes to
+ * a file. A wall of two thousand lines is not a report, it is a scroll.
+ */
+const SUMMARY_THRESHOLD = 30;
+const DEFAULT_REPORT_FILE = "next-doc-report.md";
 
 /**
  * Signals the intended exit code without calling process.exit.
@@ -46,6 +62,11 @@ function fail(message: string, hint: string | undefined, code: number): never {
   if (hint) out.error(c.dim(hint));
   out.error("");
   throw new CliExit(code);
+}
+
+/** The command as the user typed it, recorded at the top of a written report. */
+function commandLine(): string {
+  return ["next-doc", ...process.argv.slice(2)].join(" ");
 }
 
 /** `next-doc env --help` prints the rules that plugin runs. */
@@ -111,6 +132,12 @@ async function main(): Promise<void> {
     .option("--ignore <glob...>", "extra glob patterns to exclude")
     .option("--no-color", "disable colored output")
     .option("--cwd <path>", "directory to scan, defaults to the current one")
+    .option(
+      "--report [path]",
+      `write the full report to a markdown file, default ${DEFAULT_REPORT_FILE}`,
+    )
+    .option("--no-report", "never write a report file, print everything instead")
+    .option("--full", "print every finding in the terminal, however many there are")
     .addHelpText(
       "after",
       `
@@ -161,10 +188,37 @@ Exit codes:
 
     spin?.stop();
 
-    if (flags.json) out.write(formatJson(report).trimEnd());
-    else if (flags.markdown) out.write(formatMarkdown(report).trimEnd());
-    else if (flags.score) out.write(formatScoreOnly(report).trimEnd());
-    else out.write(formatTerminal(report, { fix: Boolean(flags.fix) }));
+    if (flags.json) {
+      out.write(formatJson(report).trimEnd());
+    } else if (flags.markdown) {
+      out.write(formatMarkdown(report).trimEnd());
+    } else if (flags.score) {
+      out.write(formatScoreOnly(report).trimEnd());
+    } else {
+      const actionable = report.summary.errors + report.summary.warnings;
+      const askedForFile = flags.report !== undefined && flags.report !== false;
+      const refusedFile = flags.report === false;
+      const tooMany = actionable > SUMMARY_THRESHOLD;
+
+      // A file is written when asked for, or when the terminal would otherwise
+      // become unreadable. --full and --no-report both opt out.
+      const wantsFile = !flags.full && !refusedFile && (askedForFile || tooMany);
+
+      let reportPath: string | null = null;
+      if (wantsFile) {
+        const target = typeof flags.report === "string" ? flags.report : DEFAULT_REPORT_FILE;
+        const abs = path.isAbsolute(target) ? target : path.join(flags.cwd ?? process.cwd(), target);
+        await fs.mkdir(path.dirname(abs), { recursive: true });
+        await fs.writeFile(abs, formatMarkdownReport(report, { command: commandLine() }), "utf8");
+        reportPath = path.relative(process.cwd(), abs) || target;
+      }
+
+      if (flags.full || (!tooMany && !reportPath)) {
+        out.write(formatTerminal(report, { fix: Boolean(flags.fix) }));
+      } else {
+        out.write(formatTerminalSummary(report, { reportPath, fix: Boolean(flags.fix) }));
+      }
+    }
 
     process.exitCode = exitCode;
   });

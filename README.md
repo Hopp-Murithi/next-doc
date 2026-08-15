@@ -114,6 +114,9 @@ Plugin names are positional arguments, so they compose. `env security idempotenc
 
 | Flag | What it does |
 | --- | --- |
+| `--report [path]` | Write the full report to a markdown file, default `next-doc-report.md` |
+| `--full` | Print every finding in the terminal, however many there are |
+| `--no-report` | Never write a file, print everything instead |
 | `--fix` | Applies the automatic fixes that cannot be wrong |
 | `--json` | Machine readable output with a versioned schema |
 | `--markdown` | Markdown report, made for a pull request comment |
@@ -142,6 +145,34 @@ Plugin names are positional arguments, so they compose. `env security idempotenc
 - `✗` **error**, fails the run with exit code 1.
 
 Every warning and error carries a file reference where one exists, plus one line saying what to change. A finding with no suggestion is a bug, and a test enforces it. Icons fall back to plain ASCII outside a TTY, so CI logs stay readable.
+
+**On a large codebase the terminal stays short.** Past 30 findings, next-doc prints a summary and writes the detail to `next-doc-report.md` in the folder you ran it from:
+
+```text
+NEXT DOC
+Next.js 15.5.7  TypeScript  App + Pages Router
+
+  ✗ 32 errors   △ 368 warnings   ✓ 6 passed   Score 24/100
+
+  ENV            3 errors, 26 warnings
+  SECURITY       11 errors, 1 warning
+  PERFORMANCE    11 errors, 336 warnings
+  IDEMPOTENCY    7 errors, 5 warnings
+
+  Most common
+      115  PERF_UNCACHED_FETCH
+      112  PERF_UNNECESSARY_USE_CLIENT
+      108  PERF_UNOPTIMIZED_IMAGE
+
+  Worst files
+        9  src/app/api/checkout/route.ts
+        6  src/components/Feed.tsx
+
+  Full report: next-doc-report.md
+  Run next-doc --full to print everything here instead.
+```
+
+The file groups findings by plugin, then by rule code, with one suggestion per rule rather than one per occurrence. Use `--report path/to/file.md` to choose where it goes, `--full` to print everything to the terminal, or `--no-report` to never write a file.
 
 The score is `100 - (errors × 15) - (warnings × 5)` per plugin, floored at zero, then averaged across the plugins that ran. It is a trend line for your own project, not a league table.
 

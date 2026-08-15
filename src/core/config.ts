@@ -68,14 +68,31 @@ export type UserConfig = z.infer<typeof configSchema>;
 
 export const DEFAULT_CONFIG: NextDocConfig = {
   plugins: ["env", "security", "performance", "idempotency"],
+  // Generated output is not source. Scanning it produces findings nobody can
+  // act on, which is the fastest way to make a report worth ignoring.
   ignore: [
     "**/node_modules/**",
     "**/.next/**",
+    "**/.next-*/**",
+    "**/.open-next/**",
+    "**/.vercel/**",
+    "**/.netlify/**",
+    "**/.wrangler/**",
+    "**/.turbo/**",
+    "**/.cache/**",
+    "**/.output/**",
+    "**/.svelte-kit/**",
     "**/dist/**",
     "**/build/**",
+    "**/out/**",
     "**/coverage/**",
-    "**/.turbo/**",
+    "**/storybook-static/**",
+    "**/public/**",
+    "**/*.min.js",
+    "**/*.bundle.js",
+    "**/*.chunk.js",
     "**/*.d.ts",
+    "**/*.generated.*",
   ],
   strict: false,
   rules: {},

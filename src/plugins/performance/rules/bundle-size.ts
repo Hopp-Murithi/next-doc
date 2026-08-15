@@ -129,14 +129,34 @@ export const bundleSize: Rule = {
       ];
     }
 
-    return over.map((entry, index) =>
+    // A large app can have hundreds of routes over budget, and one finding per
+    // route buries everything else in the report. The worst offenders are what
+    // anyone acts on, so report those and count the rest.
+    const SHOWN = 10;
+    const suggestion =
+      "Look for client only imports that could move behind a Server Component boundary, or load them with next/dynamic. Charting, editor and date libraries are the usual culprits.";
+
+    const findings = over.slice(0, SHOWN).map((entry, index) =>
       finding.error({
         code: "PERF_LARGE_ROUTE",
         message: `${entry.route} ships ${Math.round(entry.bytes / KB)}kb of JavaScript${index === 0 ? ", the largest route in the app" : ""}`,
         fixable: false,
-        suggestion:
-          "Look for client only imports that could move behind a Server Component boundary, or load them with next/dynamic. Charting, editor and date libraries are the usual culprits.",
+        suggestion,
       }),
     );
+
+    if (over.length > SHOWN) {
+      const remaining = over.length - SHOWN;
+      findings.push(
+        finding.warn({
+          code: "PERF_LARGE_ROUTE",
+          message: `${remaining} more route${remaining === 1 ? "" : "s"} are over the ${ctx.config.performance.maxRouteKb}kb budget`,
+          fixable: false,
+          suggestion: `${over.length} of ${sizes.length} routes exceed the budget, so the weight is probably in a shared layout or a global import rather than in any one route. Run next-doc --json for the full list.`,
+        }),
+      );
+    }
+
+    return findings;
   },
 };
