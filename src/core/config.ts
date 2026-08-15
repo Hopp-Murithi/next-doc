@@ -238,7 +238,7 @@ export async function loadConfig(cwd: string, explicitPath?: string): Promise<Lo
 /** Config written by `next-doc init`. */
 export function initialConfig(): UserConfig {
   return {
-    $schema: "https://unpkg.com/next-doc/schema.json",
+    $schema: "https://unpkg.com/@hopp/next-doc/schema.json",
     plugins: ["env", "security", "performance", "idempotency"],
     ignore: ["**/node_modules/**", "**/.next/**"],
     strict: false,

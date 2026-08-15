@@ -1,7 +1,7 @@
 # security plugin
 
 ```bash
-npx next-doc security
+npx @hopp/next-doc security
 ```
 
 ## What it checks

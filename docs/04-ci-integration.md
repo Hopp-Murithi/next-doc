@@ -35,10 +35,10 @@ jobs:
       - run: npm run build
 
       - name: Next Doc
-        run: npx next-doc --json > next-doc-report.json
+        run: npx @hopp/next-doc --json > next-doc-report.json
 
       - name: Check for errors
-        run: npx next-doc --strict
+        run: npx @hopp/next-doc --strict
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -57,7 +57,7 @@ The first step always succeeds because it only writes the report. The second ste
         run: |
           {
             echo 'body<<EOF'
-            npx next-doc --markdown
+            npx @hopp/next-doc --markdown
             echo EOF
           } >> "$GITHUB_OUTPUT"
 
@@ -72,7 +72,7 @@ The markdown output is a heading, a score line, and one table per plugin with th
 ## Gating on the score instead
 
 ```bash
-SCORE=$(npx next-doc --score)
+SCORE=$(npx @hopp/next-doc --score)
 if [ "$SCORE" -lt 80 ]; then
   echo "Score $SCORE is below the threshold of 80"
   exit 1
@@ -102,7 +102,7 @@ Then run the whole thing with `--strict` only on the branch that deploys.
 
 A large project will light up on the first run. The way through it:
 
-1. Run `npx next-doc --json > baseline.json` and read the summary.
+1. Run `npx @hopp/next-doc --json > baseline.json` and read the summary.
 2. Turn off the rules you are not ready for, in `next-doc.config.json`.
 3. Gate CI on the rest with `--strict`.
 4. Turn rules back on one at a time as you fix them.
@@ -117,8 +117,8 @@ next-doc:
   script:
     - npm ci
     - npm run build
-    - npx next-doc --json > next-doc-report.json
-    - npx next-doc --strict
+    - npx @hopp/next-doc --json > next-doc-report.json
+    - npx @hopp/next-doc --strict
   artifacts:
     when: always
     paths: [next-doc-report.json]
@@ -129,7 +129,7 @@ next-doc:
 ```json
 {
   "lint-staged": {
-    "*.{ts,tsx,js,jsx}": "npx next-doc env security"
+    "*.{ts,tsx,js,jsx}": "npx @hopp/next-doc env security"
   }
 }
 ```
@@ -141,6 +141,6 @@ Two plugins rather than four: the env and security checks are fast and their fin
 See [JSON schema](06-json-schema.md) for the full shape and the compatibility promise.
 
 ```bash
-npx next-doc --json \
+npx @hopp/next-doc --json \
   | jq -r '.results[].findings[] | select(.severity == "error") | "\(.file // "-"):\(.line // 0) \(.code) \(.message)"'
 ```

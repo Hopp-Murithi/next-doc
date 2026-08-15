@@ -99,11 +99,11 @@ async function main(): Promise<void> {
       "after",
       `
 Examples:
-  $ npx next-doc                    run every plugin
-  $ npx next-doc env security       run two plugins in one pass
-  $ npx next-doc --fix              apply the safe automatic fixes
-  $ npx next-doc --json > out.json  machine readable report for CI
-  $ npx next-doc idempotency --help list the rules a plugin runs
+  $ npx @hopp/next-doc                    run every plugin
+  $ npx @hopp/next-doc env security       run two plugins in one pass
+  $ npx @hopp/next-doc --fix              apply the safe automatic fixes
+  $ npx @hopp/next-doc --json > out.json  machine readable report for CI
+  $ npx @hopp/next-doc idempotency --help list the rules a plugin runs
 
 Exit codes:
   0  no errors, or warnings only without --strict

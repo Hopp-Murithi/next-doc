@@ -180,7 +180,7 @@ describe("report output", () => {
     const parsed = JSON.parse(formatJson(report));
 
     expect(parsed.schemaVersion).toBe(1);
-    expect(parsed.tool).toEqual({ name: "next-doc", version: VERSION });
+    expect(parsed.tool).toEqual({ name: "@hopp/next-doc", version: VERSION });
     expect(parsed.project.framework).toBe("next");
     expect(Object.keys(parsed.summary).sort()).toEqual(
       ["errors", "fixable", "fixesApplied", "passed", "score", "warnings"].sort(),

@@ -29,7 +29,7 @@ First release.
   unoptimized images, render blocking fonts, overlapping dependencies.
 - **idempotency plugin**: payment, checkout and webhook mutations with no
   duplicate request protection, and keys that are read but never persisted.
-- **Runtime library** at `next-doc/idempotency`: `withIdempotency` for
+- **Runtime library** at `@hopp/next-doc/idempotency`: `withIdempotency` for
   Web standard handlers and `createIdempotency` for Server Actions, with memory,
   Redis and Postgres adapters as separate entry points. Zero dependencies,
   2.3kb minified and gzipped, enforced by a CI budget.

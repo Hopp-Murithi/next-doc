@@ -76,7 +76,7 @@ Waiting holds a connection for an unbounded time and turns one slow payment into
 Yes:
 
 ```ts
-import { runAudit } from "next-doc";
+import { runAudit } from "@hopp/next-doc";
 
 const { report, exitCode } = await runAudit({ cwd: process.cwd(), plugins: ["security"] });
 ```

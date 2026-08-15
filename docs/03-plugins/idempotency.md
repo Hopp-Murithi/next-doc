@@ -1,7 +1,7 @@
 # idempotency plugin
 
 ```bash
-npx next-doc idempotency
+npx @hopp/next-doc idempotency
 ```
 
 This page covers the static scan. The runtime wrapper that fixes what the scan finds is documented separately in [Idempotency runtime](../05-idempotency-runtime.md).
@@ -77,8 +77,8 @@ The file reads an idempotency key but never stores it anywhere. Reading a key an
 ## Fixing what it finds
 
 ```ts
-import { withIdempotency } from "next-doc/idempotency";
-import { redisAdapter } from "next-doc/idempotency/redis";
+import { withIdempotency } from "@hopp/next-doc/idempotency";
+import { redisAdapter } from "@hopp/next-doc/idempotency/redis";
 
 export const POST = withIdempotency(
   async (request: Request) => {

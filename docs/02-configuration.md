@@ -5,7 +5,7 @@ Configuration is optional. next-doc runs with sensible defaults on a project tha
 ## Creating a config
 
 ```bash
-npx next-doc init
+npx @hopp/next-doc init
 ```
 
 That writes `next-doc.config.json`. These filenames are picked up automatically, in this order:

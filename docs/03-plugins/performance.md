@@ -1,7 +1,7 @@
 # performance plugin
 
 ```bash
-npx next-doc performance
+npx @hopp/next-doc performance
 ```
 
 ## What it checks

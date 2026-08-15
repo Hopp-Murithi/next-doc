@@ -87,7 +87,7 @@ export const unprotectedMutationRoute: Rule = {
           line: lineAt(file.text, first.index),
           fixable: false,
           suggestion:
-            "Wrap the handler with withIdempotency from next-doc/idempotency, or read an Idempotency-Key header and deduplicate yourself. A retried request here can charge a customer twice.",
+            "Wrap the handler with withIdempotency from @hopp/next-doc/idempotency, or read an Idempotency-Key header and deduplicate yourself. A retried request here can charge a customer twice.",
         }),
       );
     }
@@ -136,7 +136,7 @@ export const keyReadButNotStored: Rule = {
           line: 1,
           fixable: false,
           suggestion:
-            "Store the key atomically before doing the work, for example with withIdempotency from next-doc/idempotency, or a SET NX in Redis, or a unique constraint in your database.",
+            "Store the key atomically before doing the work, for example with withIdempotency from @hopp/next-doc/idempotency, or a SET NX in Redis, or a unique constraint in your database.",
         }),
       );
     }

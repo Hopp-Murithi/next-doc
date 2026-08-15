@@ -52,7 +52,7 @@ function resolve(options: IdempotencyOptions): ResolvedOptions {
   if (!options || !options.adapter) {
     // Fail at startup, not at the first request in production.
     throw new Error(
-      "withIdempotency requires an adapter. Import one from next-doc/idempotency/memory, /redis or /postgres.",
+      "withIdempotency requires an adapter. Import one from @hopp/next-doc/idempotency/memory, /redis or /postgres.",
     );
   }
   return {
@@ -276,7 +276,7 @@ export function createIdempotency(options: IdempotentRunOptions) {
   const adapter = options.adapter;
   if (!adapter) {
     throw new Error(
-      "createIdempotency requires an adapter. Import one from next-doc/idempotency/memory, /redis or /postgres.",
+      "createIdempotency requires an adapter. Import one from @hopp/next-doc/idempotency/memory, /redis or /postgres.",
     );
   }
   const ttlMs = (options.ttlSeconds ?? DEFAULT_TTL_SECONDS) * 1000;

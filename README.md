@@ -4,10 +4,10 @@
 
 **One command. Full picture of your Next.js or React app.**
 
-[![npm](https://img.shields.io/npm/v/next-doc.svg?color=0c7c88)](https://www.npmjs.com/package/next-doc)
+[![npm](https://img.shields.io/npm/v/@hopp/next-doc.svg?color=0c7c88)](https://www.npmjs.com/package/@hopp/next-doc)
 [![CI](https://github.com/Hopp-Murithi/next-doc/actions/workflows/ci.yml/badge.svg)](https://github.com/Hopp-Murithi/next-doc/actions/workflows/ci.yml)
-[![node](https://img.shields.io/node/v/next-doc.svg?color=0c7c88)](https://nodejs.org)
-[![license](https://img.shields.io/npm/l/next-doc.svg?color=0c7c88)](LICENSE)
+[![node](https://img.shields.io/node/v/@hopp/next-doc.svg?color=0c7c88)](https://nodejs.org)
+[![license](https://img.shields.io/npm/l/@hopp/next-doc.svg?color=0c7c88)](LICENSE)
 
 [Website](https://next-doc-taupe.vercel.app) · [Documentation](docs/01-getting-started.md) · [Rule reference](#rule-reference) · [Changelog](CHANGELOG.md)
 
@@ -18,7 +18,7 @@
 Audits environment variables, security, performance and idempotency, then tells you exactly what to change. No config needed, no account, no telemetry, no network calls.
 
 ```bash
-npx next-doc
+npx @hopp/next-doc
 ```
 
 ```text
@@ -45,7 +45,7 @@ PERFORMANCE
 IDEMPOTENCY
   ✗ app/api/payments/route.ts has no idempotency key handling detected
       app/api/payments/route.ts:3
-      Suggestion: Wrap the handler with withIdempotency from next-doc/idempotency.
+      Suggestion: Wrap the handler with withIdempotency from @hopp/next-doc/idempotency.
 
 Score: 61/100
 4 errors, 3 warnings, 6 passed
@@ -60,15 +60,15 @@ Score: 61/100
 Nothing to install to try it:
 
 ```bash
-npx next-doc
+npx @hopp/next-doc
 ```
 
 Add it to the project once you want it in CI:
 
 ```bash
-npm install --save-dev next-doc
-pnpm add -D next-doc
-yarn add -D next-doc
+npm install --save-dev @hopp/next-doc
+pnpm add -D @hopp/next-doc
+yarn add -D @hopp/next-doc
 ```
 
 Requires Node 18.18 or newer.
@@ -101,11 +101,11 @@ Rules that only apply to one framework are skipped elsewhere rather than reporte
 ## Commands
 
 ```bash
-npx next-doc                    # every plugin
-npx next-doc env                # one plugin
-npx next-doc env security       # several, in one pass
-npx next-doc init               # create next-doc.config.json
-npx next-doc idempotency --help # list a plugin's rules
+npx @hopp/next-doc                    # every plugin
+npx @hopp/next-doc env                # one plugin
+npx @hopp/next-doc env security       # several, in one pass
+npx @hopp/next-doc init               # create next-doc.config.json
+npx @hopp/next-doc idempotency --help # list a plugin's rules
 ```
 
 Plugin names are positional arguments, so they compose. `env security idempotency` reads as one sentence and runs as one pass.
@@ -149,8 +149,8 @@ The score is `100 - (errors × 15) - (warnings × 5)` per plugin, floored at zer
 
 ```yaml
 - run: npm run build          # so bundle sizes are measured, not guessed
-- run: npx next-doc --json > next-doc-report.json
-- run: npx next-doc --strict
+- run: npx @hopp/next-doc --json > next-doc-report.json
+- run: npx @hopp/next-doc --strict
 ```
 
 The first command always succeeds, so you keep the artifact even on a failing run. The second is the gate.
@@ -162,8 +162,8 @@ Full workflow, PR comments, GitLab, and a strategy for adopting this on an exist
 The scan finds handlers that can charge a customer twice. This fixes them:
 
 ```ts
-import { withIdempotency } from "next-doc/idempotency";
-import { redisAdapter } from "next-doc/idempotency/redis";
+import { withIdempotency } from "@hopp/next-doc/idempotency";
+import { redisAdapter } from "@hopp/next-doc/idempotency/redis";
 
 export const POST = withIdempotency(
   async (request: Request) => {
@@ -198,19 +198,19 @@ Works with Next.js Route Handlers and Server Actions, Remix, React Router, Hono,
 
 | Adapter | Import | Use for |
 | --- | --- | --- |
-| Memory | `next-doc/idempotency/memory` | Development and tests. One process only |
-| Redis | `next-doc/idempotency/redis` | Production. ioredis, node-redis v4 or `@upstash/redis` |
-| Postgres | `next-doc/idempotency/postgres` | Production. Any node-postgres style client |
+| Memory | `@hopp/next-doc/idempotency/memory` | Development and tests. One process only |
+| Redis | `@hopp/next-doc/idempotency/redis` | Production. ioredis, node-redis v4 or `@upstash/redis` |
+| Postgres | `@hopp/next-doc/idempotency/postgres` | Production. Any node-postgres style client |
 
 Full API, edge cases and the adapter contract: [Idempotency runtime](docs/05-idempotency-runtime.md).
 
 ## Configuration
 
-Optional. Run `npx next-doc init` for a starting point.
+Optional. Run `npx @hopp/next-doc init` for a starting point.
 
 ```json
 {
-  "$schema": "https://unpkg.com/next-doc/schema.json",
+  "$schema": "https://unpkg.com/@hopp/next-doc/schema.json",
   "plugins": ["env", "security", "performance", "idempotency"],
   "ignore": ["**/generated/**"],
   "strict": false,
@@ -306,7 +306,7 @@ Rule codes are a public API. CI pipelines allowlist them and documentation links
 **Programmatic use.**
 
 ```ts
-import { runAudit } from "next-doc";
+import { runAudit } from "@hopp/next-doc";
 
 const { report, exitCode } = await runAudit({ cwd: process.cwd(), plugins: ["security"] });
 ```
