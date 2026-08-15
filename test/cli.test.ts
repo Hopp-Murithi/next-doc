@@ -60,6 +60,13 @@ describe("cli", () => {
 
   it("emits parseable json with a schema version", async () => {
     const result = await nextDoc(["--cwd", fixture("next-bad"), "--json"]);
+
+    // Larger than the 8kb pipe buffer on purpose. Calling process.exit while
+    // stdout is still draining truncates the report exactly here, and only on
+    // Linux and macOS, where pipe writes are asynchronous.
+    expect(result.stdout.length).toBeGreaterThan(8192);
+    expect(result.stdout.trimEnd().endsWith("}")).toBe(true);
+
     const parsed = JSON.parse(result.stdout);
 
     expect(parsed.schemaVersion).toBe(1);

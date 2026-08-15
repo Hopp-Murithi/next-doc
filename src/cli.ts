@@ -24,12 +24,28 @@ interface CliFlags {
   cwd?: string;
 }
 
+/**
+ * Signals the intended exit code without calling process.exit.
+ *
+ * process.exit truncates whatever is still buffered on stdout, because writes
+ * to a pipe are asynchronous on Linux and macOS. A --json report larger than
+ * the 8kb pipe buffer would arrive cut in half, which is exactly what happens
+ * when someone runs `next-doc --json > report.json` in CI. Setting
+ * process.exitCode instead lets Node flush first and exit on its own.
+ */
+class CliExit extends Error {
+  constructor(readonly code: number) {
+    super(`exit ${code}`);
+    this.name = "CliExit";
+  }
+}
+
 function fail(message: string, hint: string | undefined, code: number): never {
   out.error("");
   out.error(`${c.red("Error:")} ${message}`);
   if (hint) out.error(c.dim(hint));
   out.error("");
-  process.exit(code);
+  throw new CliExit(code);
 }
 
 /** `next-doc env --help` prints the rules that plugin runs. */
@@ -150,20 +166,30 @@ Exit codes:
     else if (flags.score) out.write(formatScoreOnly(report).trimEnd());
     else out.write(formatTerminal(report, { fix: Boolean(flags.fix) }));
 
-    process.exit(exitCode);
+    process.exitCode = exitCode;
   });
 
   await program.parseAsync(process.argv);
 }
 
 main().catch((error: unknown) => {
-  if (error instanceof NextDocError) {
-    fail(error.message, error.hint, error.exitCode);
+  // fail() throws CliExit rather than exiting, so the code lands here and the
+  // process ends on its own once every stream has flushed.
+  if (error instanceof CliExit) {
+    process.exitCode = error.code;
+    return;
   }
-  const err = error as Error;
-  fail(
-    err.message || "Unexpected error",
-    `This is a bug in next-doc. Please file an issue with this stack trace:\n${err.stack ?? ""}`,
-    EXIT.INTERNAL,
-  );
+  try {
+    if (error instanceof NextDocError) {
+      fail(error.message, error.hint, error.exitCode);
+    }
+    const err = error as Error;
+    fail(
+      err.message || "Unexpected error",
+      `This is a bug in next-doc. Please file an issue with this stack trace:\n${err.stack ?? ""}`,
+      EXIT.INTERNAL,
+    );
+  } catch (exit) {
+    process.exitCode = exit instanceof CliExit ? exit.code : EXIT.INTERNAL;
+  }
 });
