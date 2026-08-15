@@ -11,7 +11,7 @@
 [![node](https://img.shields.io/node/v/%40wamasoda%2Fnextdoc?color=0c7c88&label=node)](https://nodejs.org)
 [![license](https://img.shields.io/npm/l/%40wamasoda%2Fnextdoc?color=0c7c88&label=license)](LICENSE)
 
-[Website](https://next-doc-taupe.vercel.app) · [Documentation](docs/01-getting-started.md) · [Rule reference](#rule-reference) · [Verification](VERIFICATION.md) · [Changelog](CHANGELOG.md)
+[Website](https://nextdoc.online) · [Documentation](docs/01-getting-started.md) · [Rule reference](#rule-reference) · [Verification](VERIFICATION.md) · [Changelog](CHANGELOG.md)
 
 </div>
 

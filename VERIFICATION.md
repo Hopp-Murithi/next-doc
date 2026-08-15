@@ -15,7 +15,7 @@ Tag: [`v0.3.0`](https://github.com/Hopp-Murithi/next-doc/releases)
 | --- | --- |
 | Package | [npmjs.com/package/@wamasoda/nextdoc](https://www.npmjs.com/package/@wamasoda/nextdoc) |
 | Repository | [github.com/Hopp-Murithi/next-doc](https://github.com/Hopp-Murithi/next-doc) |
-| Website | [next-doc-taupe.vercel.app](https://next-doc-taupe.vercel.app) |
+| Website | [nextdoc.online](https://nextdoc.online) |
 | CI runs | [Actions tab](https://github.com/Hopp-Murithi/next-doc/actions) |
 | Releases | [All releases](https://github.com/Hopp-Murithi/next-doc/releases) |
 
@@ -239,7 +239,7 @@ requests. It follows your system theme and has a toggle.
 ### Verify it yourself
 
 ```bash
-curl -I https://next-doc-taupe.vercel.app
+curl -I https://nextdoc.online
 ```
 
 ---
