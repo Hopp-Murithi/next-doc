@@ -9,6 +9,20 @@ code or removing a JSON field is a breaking change.
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-08-15
+
+Links only. No code changed.
+
+### Fixed
+
+- `homepage` now points at nextdoc.online, so the Website link in the npm
+  sidebar goes to the site rather than back to the readme it is printed on.
+- The Website link in the readme pointed at the vercel.app address instead of
+  the domain. Both it and the verification report now use nextdoc.online.
+- The vercel.app address permanently redirects to nextdoc.online, so links in
+  already published versions land in the right place, and the page declares a
+  canonical URL.
+
 ## [0.3.1] - 2026-08-15
 
 Documentation only. No code changed.
