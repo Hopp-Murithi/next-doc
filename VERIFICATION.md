@@ -1,6 +1,6 @@
 # Verification report
 
-Everything that was run before `@wamasoda/next-doc@0.1.0` shipped,
+Everything that was run before `@wamasoda/nextdoc@0.1.0` shipped,
 what it produced, and how to see it for yourself.
 
 Release date: 15 August 2026
@@ -13,7 +13,7 @@ Tag: [`v0.1.0`](https://github.com/Hopp-Murithi/next-doc/releases/tag/v0.1.0)
 
 | What | Where |
 | --- | --- |
-| Package | [npmjs.com/package/@wamasoda/next-doc](https://www.npmjs.com/package/@wamasoda/next-doc) |
+| Package | [npmjs.com/package/@wamasoda/nextdoc](https://www.npmjs.com/package/@wamasoda/nextdoc) |
 | Repository | [github.com/Hopp-Murithi/next-doc](https://github.com/Hopp-Murithi/next-doc) |
 | Website | [next-doc-taupe.vercel.app](https://next-doc-taupe.vercel.app) |
 | CI runs | [Actions tab](https://github.com/Hopp-Murithi/next-doc/actions) |
@@ -135,7 +135,7 @@ A clean project with only this package installed audits as
 ```bash
 mkdir audit-probe && cd audit-probe
 npm init -y
-npm install @wamasoda/next-doc
+npm install @wamasoda/nextdoc
 npm audit
 ```
 
@@ -179,7 +179,7 @@ pnpm run size
 
 ## 5. Published package
 
-**`@wamasoda/next-doc@0.1.0`**, 47 files, 523 kB unpacked.
+**`@wamasoda/nextdoc@0.1.0`**, 47 files, 523 kB unpacked.
 
 The tarball carries `dist`, `docs`, `schema.json`, the README, the
 licence and the changelog. No source, no tests, no fixtures.
@@ -199,8 +199,8 @@ with a regression test.
 ### Verify it yourself
 
 ```bash
-npx @wamasoda/next-doc --version
-npm view @wamasoda/next-doc
+npx @wamasoda/nextdoc --version
+npm view @wamasoda/nextdoc
 ```
 
 ---

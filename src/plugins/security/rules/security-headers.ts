@@ -100,8 +100,8 @@ export const securityHeaders: Rule = {
     const target = nextConfigFile ?? files[0];
     const suggestion = ctx.framework.isNext
       ? hasHeadersFn
-        ? `Add ${missing.join(", ")} to the existing headers() block in ${target ?? "next.config.js"}. next-doc will not merge into an existing headers function, that is too risky to automate.`
-        : `Add an async headers() block to ${target ?? "next.config.mjs"} returning ${missing.join(", ")}. Run next-doc --fix to scaffold it.`
+        ? `Add ${missing.join(", ")} to the existing headers() block in ${target ?? "next.config.js"}. nextdoc will not merge into an existing headers function, that is too risky to automate.`
+        : `Add an async headers() block to ${target ?? "next.config.mjs"} returning ${missing.join(", ")}. Run nextdoc --fix to scaffold it.`
       : `Set ${missing.join(", ")} at your host or CDN, for example a vercel.json headers block, a netlify.toml [[headers]] block, or a public/_headers file.`;
 
     // One finding for the whole set: five separate lines for one missing

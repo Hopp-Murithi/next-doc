@@ -1,20 +1,20 @@
 # Configuration
 
-Configuration is optional. next-doc runs with sensible defaults on a project that has no config file at all.
+Configuration is optional. nextdoc runs with sensible defaults on a project that has no config file at all.
 
 ## Creating a config
 
 ```bash
-npx @wamasoda/next-doc init
+npx @wamasoda/nextdoc init
 ```
 
-That writes `next-doc.config.json`. These filenames are picked up automatically, in this order:
+That writes `nextdoc.config.json`. These filenames are picked up automatically, in this order:
 
-1. `next-doc.config.json`
-2. `next-doc.config.js`
-3. `next-doc.config.mjs`
-4. `next-doc.config.cjs`
-5. `next-doc.config.ts`
+1. `nextdoc.config.json`
+2. `nextdoc.config.js`
+3. `nextdoc.config.mjs`
+4. `nextdoc.config.cjs`
+5. `nextdoc.config.ts`
 
 A JavaScript config must export the object as its default export. A TypeScript config only works when the CLI runs through a TypeScript loader such as `tsx`, so JSON is the recommended format.
 
@@ -102,7 +102,7 @@ Rule codes are a public API. See each plugin page for the full list.
 | Key | Type | Meaning |
 | --- | --- | --- |
 | `requiredHeaders` | `string[]` | Headers that must appear in your header configuration. |
-| `headerFiles` | `string[]` | Extra files to search for headers, for hosts next-doc does not know about. |
+| `headerFiles` | `string[]` | Extra files to search for headers, for hosts nextdoc does not know about. |
 
 Headers are searched for in `next.config.*`, `middleware.*`, `vercel.json`, `netlify.toml`, `public/_headers`, `staticwebapp.config.json`, `entry.server.*`, `server.*` and `nginx.conf`.
 
@@ -125,13 +125,13 @@ Headers are searched for in `next.config.*`, `middleware.*`, `vercel.json`, `net
 Heuristic rules need an escape hatch. Add a comment on the flagged line or the line directly above it:
 
 ```ts
-// next-doc-ignore idempotency
+// nextdoc-ignore idempotency
 export async function POST(request: Request) {}
 
-// next-doc-ignore IDEM_UNPROTECTED_ROUTE, SECURITY_MISSING_CSRF
+// nextdoc-ignore IDEM_UNPROTECTED_ROUTE, SECURITY_MISSING_CSRF
 export async function PUT(request: Request) {}
 
-export async function PATCH(request: Request) {} // next-doc-ignore
+export async function PATCH(request: Request) {} // nextdoc-ignore
 ```
 
-A bare `next-doc-ignore` suppresses every finding on that line. Otherwise pass a plugin name or a rule code, comma separated.
+A bare `nextdoc-ignore` suppresses every finding on that line. Otherwise pass a plugin name or a rule code, comma separated.

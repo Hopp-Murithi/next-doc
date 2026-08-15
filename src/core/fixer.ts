@@ -23,7 +23,7 @@ const PROTECTED_BASENAMES = new Set([
 export class ProtectedFileError extends Error {
   constructor(file: string) {
     super(
-      `Refusing to modify ${file}. next-doc --fix never writes to real environment files, only to .env.example.`,
+      `Refusing to modify ${file}. nextdoc --fix never writes to real environment files, only to .env.example.`,
     );
     this.name = "ProtectedFileError";
   }

@@ -24,14 +24,14 @@ Both. It detects Next.js, Vite, Create React App, Remix, React Router framework 
 
 Because there is no build output to measure. Run `next build` (or your production build) first, then run the plugin again.
 
-next-doc will not estimate a compiled bundle size from source file size. An invented number that disagrees with your own build output would cost more trust than the check is worth.
+nextdoc will not estimate a compiled bundle size from source file size. An invented number that disagrees with your own build output would cost more trust than the check is worth.
 
 ## Why is a finding worded as "possible"?
 
 Because the rule is a heuristic and cannot prove the problem. The idempotency scan is the clearest case: it can see that a payment route never mentions an idempotency key, but it cannot know that a wrapper three layers down handles it. Suppress a wrong one:
 
 ```ts
-// next-doc-ignore idempotency
+// nextdoc-ignore idempotency
 export async function POST(request: Request) {}
 ```
 
@@ -76,7 +76,7 @@ Waiting holds a connection for an unbounded time and turns one slow payment into
 Yes:
 
 ```ts
-import { runAudit } from "@wamasoda/next-doc";
+import { runAudit } from "@wamasoda/nextdoc";
 
 const { report, exitCode } = await runAudit({ cwd: process.cwd(), plugins: ["security"] });
 ```

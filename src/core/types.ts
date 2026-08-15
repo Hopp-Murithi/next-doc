@@ -131,7 +131,7 @@ export interface NextDocPlugin {
   rules: Rule[];
 }
 
-/** Parsed and validated next-doc.config.json. See src/core/config.ts. */
+/** Parsed and validated nextdoc.config.json. See src/core/config.ts. */
 export interface NextDocConfig {
   plugins: PluginName[];
   ignore: string[];

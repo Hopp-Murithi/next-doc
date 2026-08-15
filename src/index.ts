@@ -59,7 +59,7 @@ export async function runAudit(options: RunOptions = {}): Promise<RunResult> {
     throw new NextDocError(
       "No Next.js or React project found here.",
       EXIT.NOT_A_PROJECT,
-      "next-doc looks for next.config.*, vite.config.*, or a react dependency in package.json. Run it from your project root, or pass a directory.",
+      "nextdoc looks for next.config.*, vite.config.*, or a react dependency in package.json. Run it from your project root, or pass a directory.",
     );
   }
 

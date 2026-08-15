@@ -1,6 +1,6 @@
 {
-  "name": "@wamasoda/next-doc",
-  "version": "0.2.0",
+  "name": "@wamasoda/nextdoc",
+  "version": "0.3.0",
   "description": "One command. Full picture of your Next.js or React app. Audits env vars, security, performance and idempotency.",
   "keywords": [
     "nextjs",
@@ -26,7 +26,7 @@
   },
   "type": "module",
   "bin": {
-    "next-doc": "./dist/cli.js"
+    "nextdoc": "./dist/cli.js"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",

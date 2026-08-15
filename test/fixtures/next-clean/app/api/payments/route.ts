@@ -1,5 +1,5 @@
-import { withIdempotency } from "@wamasoda/next-doc/idempotency";
-import { memoryAdapter } from "@wamasoda/next-doc/idempotency/memory";
+import { withIdempotency } from "@wamasoda/nextdoc/idempotency";
+import { memoryAdapter } from "@wamasoda/nextdoc/idempotency/memory";
 
 export const POST = withIdempotency(
   async (request: Request) => {

@@ -53,6 +53,12 @@ jobs:
             echo "exists=false" >> "$GITHUB_OUTPUT"
           fi
 
+      # NPM_TOKEN must be a token that does not require a one time password,
+      # otherwise this step fails with EOTP after building and signing
+      # everything. Either works:
+      #   Automation token, npmjs.com > Access Tokens > Classic > Automation
+      #   Granular token with "Bypass 2FA" enabled, scoped to @wamasoda
+      # A Publish or Read-only classic token still prompts for 2FA and fails.
       - name: Publish
         if: steps.published.outputs.exists == 'false'
         run: npm publish --provenance --access public

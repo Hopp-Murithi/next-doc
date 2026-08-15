@@ -30,7 +30,7 @@ export const hardcodedSecret: Rule = {
           line,
           fixable: false,
           suggestion: inTests
-            ? "If this is a fake fixture value, ignore it with a next-doc-ignore comment. If it is real, rotate it and read it from the environment."
+            ? "If this is a fake fixture value, ignore it with a nextdoc-ignore comment. If it is real, rotate it and read it from the environment."
             : "Move it into an environment variable and rotate the credential, since it is already in your git history.",
         };
         findings.push(inTests ? finding.warn(base) : finding.error(base));

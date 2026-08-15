@@ -7,6 +7,13 @@ import { NextDocError, EXIT } from "./exit-codes.js";
 import { stripBom } from "./scan.js";
 
 export const CONFIG_FILENAMES = [
+  "nextdoc.config.json",
+  "nextdoc.config.js",
+  "nextdoc.config.mjs",
+  "nextdoc.config.cjs",
+  "nextdoc.config.ts",
+  // The package was briefly called next-doc. Anyone who wrote a config under
+  // the old name keeps working, they just lose the alphabetical race.
   "next-doc.config.json",
   "next-doc.config.js",
   "next-doc.config.mjs",
@@ -206,7 +213,7 @@ async function readConfigFile(file: string): Promise<unknown> {
       throw new NextDocError(
         `Could not load ${path.basename(file)}. Node cannot import TypeScript directly.`,
         EXIT.CONFIG,
-        "Use next-doc.config.json, or run the CLI through a TypeScript loader such as tsx.",
+        "Use nextdoc.config.json, or run the CLI through a TypeScript loader such as tsx.",
       );
     }
     throw new NextDocError(`Could not load config file: ${file}`, EXIT.CONFIG, (err as Error).message);
@@ -252,10 +259,10 @@ export async function loadConfig(cwd: string, explicitPath?: string): Promise<Lo
   return { config: merge(DEFAULT_CONFIG, parsed.data), sourcePath: file };
 }
 
-/** Config written by `next-doc init`. */
+/** Config written by `nextdoc init`. */
 export function initialConfig(): UserConfig {
   return {
-    $schema: "https://unpkg.com/@wamasoda/next-doc/schema.json",
+    $schema: "https://unpkg.com/@wamasoda/nextdoc/schema.json",
     plugins: ["env", "security", "performance", "idempotency"],
     ignore: ["**/node_modules/**", "**/.next/**"],
     strict: false,

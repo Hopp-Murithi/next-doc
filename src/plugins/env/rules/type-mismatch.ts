@@ -54,7 +54,7 @@ export const typeMismatch: Rule = {
             file: file.file,
             line: entry.line,
             fixable: false,
-            suggestion: `Correct the value of ${key} in ${file.file}, or change its declared type in next-doc.config`,
+            suggestion: `Correct the value of ${key} in ${file.file}, or change its declared type in nextdoc.config`,
           }),
         );
       }

@@ -111,7 +111,7 @@ export const bundleSize: Rule = {
           code: "PERF_NO_BUILD_OUTPUT",
           message: `No build output found, so bundle sizes were not measured`,
           fixable: false,
-          suggestion: `Run ${command} first, then run next-doc performance again for real bundle numbers.`,
+          suggestion: `Run ${command} first, then run nextdoc performance again for real bundle numbers.`,
         }),
       ];
     }
@@ -152,7 +152,7 @@ export const bundleSize: Rule = {
           code: "PERF_LARGE_ROUTE",
           message: `${remaining} more route${remaining === 1 ? "" : "s"} are over the ${ctx.config.performance.maxRouteKb}kb budget`,
           fixable: false,
-          suggestion: `${over.length} of ${sizes.length} routes exceed the budget, so the weight is probably in a shared layout or a global import rather than in any one route. Run next-doc --json for the full list.`,
+          suggestion: `${over.length} of ${sizes.length} routes exceed the budget, so the weight is probably in a shared layout or a global import rather than in any one route. Run nextdoc --json for the full list.`,
         }),
       );
     }

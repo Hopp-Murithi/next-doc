@@ -61,7 +61,7 @@ export function formatTerminal(report: RunReport, opts: { fix: boolean }): strin
   ].filter(Boolean) as string[];
 
   lines.push("");
-  lines.push(c.bold(c.cyan("NEXT DOC")));
+  lines.push(c.bold(c.cyan("NEXTDOC")));
   lines.push(c.dim(meta.join("  ")));
   lines.push("");
 
@@ -103,11 +103,11 @@ export function formatTerminal(report: RunReport, opts: { fix: boolean }): strin
   } else if (!opts.fix && fixable > 0) {
     lines.push("");
     lines.push(
-      `Run ${c.cyan("next-doc --fix")} to apply ${fixable} automatic fix${fixable === 1 ? "" : "es"}.`,
+      `Run ${c.cyan("nextdoc --fix")} to apply ${fixable} automatic fix${fixable === 1 ? "" : "es"}.`,
     );
   }
 
-  lines.push(c.dim(`Run ${"next-doc <plugin> --help"} for plugin specific options.`));
+  lines.push(c.dim(`Run ${"nextdoc <plugin> --help"} for plugin specific options.`));
   lines.push("");
   return lines.join("\n");
 }
@@ -153,7 +153,7 @@ export function formatTerminalSummary(
   const { errors, warnings, passed, fixable, score } = report.summary;
 
   lines.push("");
-  lines.push(c.bold(c.cyan("NEXT DOC")));
+  lines.push(c.bold(c.cyan("NEXTDOC")));
   lines.push(c.dim(meta.join("  ")));
   lines.push("");
   lines.push(
@@ -210,9 +210,9 @@ export function formatTerminalSummary(
     lines.push(c.dim("  Open it for every finding, grouped by plugin and rule."));
   }
   if (!opts.fix && fixable > 0) {
-    lines.push(c.dim(`  Run next-doc --fix to apply ${fixable} automatic fix${fixable === 1 ? "" : "es"}.`));
+    lines.push(c.dim(`  Run nextdoc --fix to apply ${fixable} automatic fix${fixable === 1 ? "" : "es"}.`));
   }
-  lines.push(c.dim("  Run next-doc --full to print everything here instead."));
+  lines.push(c.dim("  Run nextdoc --full to print everything here instead."));
   lines.push("");
 
   return lines.join("\n");
@@ -223,12 +223,12 @@ export function formatTerminalSummary(
  * of one rule read as one section with a file list rather than a thousand
  * repeated paragraphs.
  */
-export function formatMarkdownReport(report: RunReport, opts: { command: string } = { command: "next-doc" }): string {
+export function formatMarkdownReport(report: RunReport, opts: { command: string } = { command: "nextdoc" }): string {
   const lines: string[] = [];
   const { errors, warnings, passed, fixable, score } = report.summary;
   const stamp = new Date().toISOString().replace("T", " ").slice(0, 16);
 
-  lines.push("# Next Doc report");
+  lines.push("# Nextdoc report");
   lines.push("");
   lines.push(`Generated ${stamp} UTC by \`${opts.command}\``);
   lines.push("");
@@ -328,7 +328,7 @@ export function formatMarkdownReport(report: RunReport, opts: { command: string 
 
   lines.push("---");
   lines.push("");
-  lines.push(`<sub>${PACKAGE_NAME} v${VERSION}. Suppress a finding with a \`next-doc-ignore\` comment.</sub>`);
+  lines.push(`<sub>${PACKAGE_NAME} v${VERSION}. Suppress a finding with a \`nextdoc-ignore\` comment.</sub>`);
   lines.push("");
   return lines.join("\n");
 }
@@ -346,7 +346,7 @@ export function formatMarkdown(report: RunReport): string {
   const lines: string[] = [];
   const { errors, warnings, passed, score } = report.summary;
 
-  lines.push(`## Next Doc report`);
+  lines.push(`## Nextdoc report`);
   lines.push("");
   lines.push(
     `**Score: ${score}/100** ${errors} error${errors === 1 ? "" : "s"}, ${warnings} warning${

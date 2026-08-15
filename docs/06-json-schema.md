@@ -1,7 +1,7 @@
 # JSON output schema
 
 ```bash
-npx @wamasoda/next-doc --json
+npx @wamasoda/nextdoc --json
 ```
 
 This output is a public API. People pipe it into other tools, so it carries a version and changes to it follow rules.
@@ -21,7 +21,7 @@ Read `schemaVersion` before parsing, and ignore fields you do not recognise.
 {
   "schemaVersion": 1,
   "tool": {
-    "name": "@wamasoda/next-doc",
+    "name": "@wamasoda/nextdoc",
     "version": "0.1.0"
   },
   "project": {
@@ -79,7 +79,7 @@ Read `schemaVersion` before parsing, and ignore fields you do not recognise.
 | Field | Type | Notes |
 | --- | --- | --- |
 | `schemaVersion` | `1` | Read this first |
-| `tool.name` | `string` | Always `@wamasoda/next-doc` |
+| `tool.name` | `string` | Always `@wamasoda/nextdoc` |
 | `tool.version` | `string` | Package version that produced the report |
 | `project` | `object` | Detected project shape |
 | `results` | `PluginResult[]` | One entry per plugin that ran, in the order it ran |
@@ -144,15 +144,15 @@ Environment variable values, file contents, and anything else that could carry a
 
 ```bash
 # Errors only, as file:line lines
-npx @wamasoda/next-doc --json \
+npx @wamasoda/nextdoc --json \
   | jq -r '.results[].findings[] | select(.severity=="error") | "\(.file // "-"):\(.line // 0) \(.code)"'
 
 # Count findings by rule code
-npx @wamasoda/next-doc --json \
+npx @wamasoda/nextdoc --json \
   | jq -r '[.results[].findings[] | select(.severity!="pass") | .code] | group_by(.) | map({code: .[0], count: length})'
 
 # Fail a build below a score threshold
-test "$(npx @wamasoda/next-doc --score)" -ge 80
+test "$(npx @wamasoda/nextdoc --score)" -ge 80
 ```
 
 ## Types
@@ -160,5 +160,5 @@ test "$(npx @wamasoda/next-doc --score)" -ge 80
 The same shapes are exported as TypeScript types from the package root:
 
 ```ts
-import type { RunReport, Finding, PluginResult } from "@wamasoda/next-doc";
+import type { RunReport, Finding, PluginResult } from "@wamasoda/nextdoc";
 ```

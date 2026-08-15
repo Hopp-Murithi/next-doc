@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://unpkg.com/@wamasoda/next-doc/schema.json",
-  "title": "next-doc configuration",
-  "description": "Configuration for the next-doc CLI. Every key is optional. Unknown keys are rejected.",
+  "$id": "https://unpkg.com/@wamasoda/nextdoc/schema.json",
+  "title": "nextdoc configuration",
+  "description": "Configuration for the nextdoc CLI. Every key is optional. Unknown keys are rejected.",
   "type": "object",
   "additionalProperties": false,
   "properties": {
@@ -69,7 +69,7 @@
           "items": { "type": "string" }
         },
         "headerFiles": {
-          "description": "Extra files to search for headers, for hosts next-doc does not know about.",
+          "description": "Extra files to search for headers, for hosts nextdoc does not know about.",
           "type": "array",
           "items": { "type": "string" }
         }

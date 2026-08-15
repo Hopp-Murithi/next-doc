@@ -86,12 +86,12 @@ describe("cli", () => {
   it("produces a markdown report suitable for a pull request comment", async () => {
     const result = await nextDoc(["--cwd", fixture("next-bad"), "--markdown"]);
 
-    expect(result.stdout).toContain("## Next Doc report");
+    expect(result.stdout).toContain("## Nextdoc report");
     expect(result.stdout).toContain("| FAIL | `SECURITY_WEBHOOK_UNVERIFIED`");
   });
 
   it("writes a grouped markdown report and keeps the terminal short", async () => {
-    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "next-doc-report-"));
+    const dir = await fs.mkdtemp(path.join(os.tmpdir(), "nextdoc-report-"));
     const target = path.join(dir, "report.md");
 
     const result = await nextDoc(["--cwd", fixture("next-bad"), "--report", target]);
@@ -103,7 +103,7 @@ describe("cli", () => {
     expect(result.stdout).not.toContain("Suggestion:");
 
     // The file gets the detail, grouped by plugin and then by rule code.
-    expect(report).toContain("# Next Doc report");
+    expect(report).toContain("# Nextdoc report");
     expect(report).toContain("## Contents");
     expect(report).toContain("## SECURITY");
     expect(report).toContain("### `SECURITY_WEBHOOK_UNVERIFIED`");

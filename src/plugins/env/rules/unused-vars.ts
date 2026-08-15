@@ -46,7 +46,7 @@ export const unusedVars: Rule = {
             file: file.file,
             line: entry.line,
             fixable: false,
-            suggestion: `Remove ${entry.key} if it is dead, or add it to env.optional in next-doc.config if a framework or platform reads it`,
+            suggestion: `Remove ${entry.key} if it is dead, or add it to env.optional in nextdoc.config if a framework or platform reads it`,
           }),
         );
       }

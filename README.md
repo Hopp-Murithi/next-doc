@@ -1,13 +1,13 @@
 <div align="center">
 
-# next-doc
+# nextdoc
 
 **One command. Full picture of your Next.js or React app.**
 
-[![npm](https://img.shields.io/npm/v/@wamasoda/next-doc.svg?color=0c7c88)](https://www.npmjs.com/package/@wamasoda/next-doc)
+[![npm](https://img.shields.io/npm/v/@wamasoda/nextdoc.svg?color=0c7c88)](https://www.npmjs.com/package/@wamasoda/nextdoc)
 [![CI](https://github.com/Hopp-Murithi/next-doc/actions/workflows/ci.yml/badge.svg)](https://github.com/Hopp-Murithi/next-doc/actions/workflows/ci.yml)
-[![node](https://img.shields.io/node/v/@wamasoda/next-doc.svg?color=0c7c88)](https://nodejs.org)
-[![license](https://img.shields.io/npm/l/@wamasoda/next-doc.svg?color=0c7c88)](LICENSE)
+[![node](https://img.shields.io/node/v/@wamasoda/nextdoc.svg?color=0c7c88)](https://nodejs.org)
+[![license](https://img.shields.io/npm/l/@wamasoda/nextdoc.svg?color=0c7c88)](LICENSE)
 
 [Website](https://next-doc-taupe.vercel.app) · [Documentation](docs/01-getting-started.md) · [Rule reference](#rule-reference) · [Verification](VERIFICATION.md) · [Changelog](CHANGELOG.md)
 
@@ -18,11 +18,11 @@
 Audits environment variables, security, performance and idempotency, then tells you exactly what to change. No config needed, no account, no telemetry, no network calls.
 
 ```bash
-npx @wamasoda/next-doc
+npx @wamasoda/nextdoc
 ```
 
 ```text
-NEXT DOC
+NEXTDOC
 Next.js 15.1.0  TypeScript  App Router
 
 ENV
@@ -45,7 +45,7 @@ PERFORMANCE
 IDEMPOTENCY
   ✗ app/api/payments/route.ts has no idempotency key handling detected
       app/api/payments/route.ts:3
-      Suggestion: Wrap the handler with withIdempotency from @wamasoda/next-doc/idempotency.
+      Suggestion: Wrap the handler with withIdempotency from @wamasoda/nextdoc/idempotency.
 
 Score: 61/100
 4 errors, 3 warnings, 6 passed
@@ -60,15 +60,15 @@ Score: 61/100
 Nothing to install to try it:
 
 ```bash
-npx @wamasoda/next-doc
+npx @wamasoda/nextdoc
 ```
 
 Add it to the project once you want it in CI:
 
 ```bash
-npm install --save-dev @wamasoda/next-doc
-pnpm add -D @wamasoda/next-doc
-yarn add -D @wamasoda/next-doc
+npm install --save-dev @wamasoda/nextdoc
+pnpm add -D @wamasoda/nextdoc
+yarn add -D @wamasoda/nextdoc
 ```
 
 Requires Node 18.18 or newer.
@@ -101,11 +101,11 @@ Rules that only apply to one framework are skipped elsewhere rather than reporte
 ## Commands
 
 ```bash
-npx @wamasoda/next-doc                    # every plugin
-npx @wamasoda/next-doc env                # one plugin
-npx @wamasoda/next-doc env security       # several, in one pass
-npx @wamasoda/next-doc init               # create next-doc.config.json
-npx @wamasoda/next-doc idempotency --help # list a plugin's rules
+npx @wamasoda/nextdoc                    # every plugin
+npx @wamasoda/nextdoc env                # one plugin
+npx @wamasoda/nextdoc env security       # several, in one pass
+npx @wamasoda/nextdoc init               # create nextdoc.config.json
+npx @wamasoda/nextdoc idempotency --help # list a plugin's rules
 ```
 
 Plugin names are positional arguments, so they compose. `env security idempotency` reads as one sentence and runs as one pass.
@@ -114,7 +114,7 @@ Plugin names are positional arguments, so they compose. `env security idempotenc
 
 | Flag | What it does |
 | --- | --- |
-| `--report [path]` | Write the full report to a markdown file, default `next-doc-report.md` |
+| `--report [path]` | Write the full report to a markdown file, default `nextdoc-report.md` |
 | `--full` | Print every finding in the terminal, however many there are |
 | `--no-report` | Never write a file, print everything instead |
 | `--fix` | Applies the automatic fixes that cannot be wrong |
@@ -146,10 +146,10 @@ Plugin names are positional arguments, so they compose. `env security idempotenc
 
 Every warning and error carries a file reference where one exists, plus one line saying what to change. A finding with no suggestion is a bug, and a test enforces it. Icons fall back to plain ASCII outside a TTY, so CI logs stay readable.
 
-**On a large codebase the terminal stays short.** Past 30 findings, next-doc prints a summary and writes the detail to `next-doc-report.md` in the folder you ran it from:
+**On a large codebase the terminal stays short.** Past 30 findings, nextdoc prints a summary and writes the detail to `nextdoc-report.md` in the folder you ran it from:
 
 ```text
-NEXT DOC
+NEXTDOC
 Next.js 15.5.7  TypeScript  App + Pages Router
 
   ✗ 32 errors   △ 368 warnings   ✓ 6 passed   Score 24/100
@@ -168,8 +168,8 @@ Next.js 15.5.7  TypeScript  App + Pages Router
         9  src/app/api/checkout/route.ts
         6  src/components/Feed.tsx
 
-  Full report: next-doc-report.md
-  Run next-doc --full to print everything here instead.
+  Full report: nextdoc-report.md
+  Run nextdoc --full to print everything here instead.
 ```
 
 The file groups findings by plugin, then by rule code, with one suggestion per rule rather than one per occurrence. Use `--report path/to/file.md` to choose where it goes, `--full` to print everything to the terminal, or `--no-report` to never write a file.
@@ -180,8 +180,8 @@ The score is `100 - (errors × 15) - (warnings × 5)` per plugin, floored at zer
 
 ```yaml
 - run: npm run build          # so bundle sizes are measured, not guessed
-- run: npx @wamasoda/next-doc --json > next-doc-report.json
-- run: npx @wamasoda/next-doc --strict
+- run: npx @wamasoda/nextdoc --json > nextdoc-report.json
+- run: npx @wamasoda/nextdoc --strict
 ```
 
 The first command always succeeds, so you keep the artifact even on a failing run. The second is the gate.
@@ -193,8 +193,8 @@ Full workflow, PR comments, GitLab, and a strategy for adopting this on an exist
 The scan finds handlers that can charge a customer twice. This fixes them:
 
 ```ts
-import { withIdempotency } from "@wamasoda/next-doc/idempotency";
-import { redisAdapter } from "@wamasoda/next-doc/idempotency/redis";
+import { withIdempotency } from "@wamasoda/nextdoc/idempotency";
+import { redisAdapter } from "@wamasoda/nextdoc/idempotency/redis";
 
 export const POST = withIdempotency(
   async (request: Request) => {
@@ -229,19 +229,19 @@ Works with Next.js Route Handlers and Server Actions, Remix, React Router, Hono,
 
 | Adapter | Import | Use for |
 | --- | --- | --- |
-| Memory | `@wamasoda/next-doc/idempotency/memory` | Development and tests. One process only |
-| Redis | `@wamasoda/next-doc/idempotency/redis` | Production. ioredis, node-redis v4 or `@upstash/redis` |
-| Postgres | `@wamasoda/next-doc/idempotency/postgres` | Production. Any node-postgres style client |
+| Memory | `@wamasoda/nextdoc/idempotency/memory` | Development and tests. One process only |
+| Redis | `@wamasoda/nextdoc/idempotency/redis` | Production. ioredis, node-redis v4 or `@upstash/redis` |
+| Postgres | `@wamasoda/nextdoc/idempotency/postgres` | Production. Any node-postgres style client |
 
 Full API, edge cases and the adapter contract: [Idempotency runtime](docs/05-idempotency-runtime.md).
 
 ## Configuration
 
-Optional. Run `npx @wamasoda/next-doc init` for a starting point.
+Optional. Run `npx @wamasoda/nextdoc init` for a starting point.
 
 ```json
 {
-  "$schema": "https://unpkg.com/@wamasoda/next-doc/schema.json",
+  "$schema": "https://unpkg.com/@wamasoda/nextdoc/schema.json",
   "plugins": ["env", "security", "performance", "idempotency"],
   "ignore": ["**/generated/**"],
   "strict": false,
@@ -265,10 +265,10 @@ Unknown keys are rejected rather than ignored, so a typo cannot leave a check qu
 Suppress a single finding on the flagged line or the line above it:
 
 ```ts
-// next-doc-ignore idempotency
+// nextdoc-ignore idempotency
 export async function POST(request: Request) {}
 
-// next-doc-ignore IDEM_UNPROTECTED_ROUTE, SECURITY_MISSING_CSRF
+// nextdoc-ignore IDEM_UNPROTECTED_ROUTE, SECURITY_MISSING_CSRF
 export async function PUT(request: Request) {}
 ```
 
@@ -337,7 +337,7 @@ Rule codes are a public API. CI pipelines allowlist them and documentation links
 **Programmatic use.**
 
 ```ts
-import { runAudit } from "@wamasoda/next-doc";
+import { runAudit } from "@wamasoda/nextdoc";
 
 const { report, exitCode } = await runAudit({ cwd: process.cwd(), plugins: ["security"] });
 ```

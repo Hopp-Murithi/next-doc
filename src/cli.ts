@@ -38,7 +38,7 @@ interface CliFlags {
  * a file. A wall of two thousand lines is not a report, it is a scroll.
  */
 const SUMMARY_THRESHOLD = 30;
-const DEFAULT_REPORT_FILE = "next-doc-report.md";
+const DEFAULT_REPORT_FILE = "nextdoc-report.md";
 
 /**
  * Signals the intended exit code without calling process.exit.
@@ -46,7 +46,7 @@ const DEFAULT_REPORT_FILE = "next-doc-report.md";
  * process.exit truncates whatever is still buffered on stdout, because writes
  * to a pipe are asynchronous on Linux and macOS. A --json report larger than
  * the 8kb pipe buffer would arrive cut in half, which is exactly what happens
- * when someone runs `next-doc --json > report.json` in CI. Setting
+ * when someone runs `nextdoc --json > report.json` in CI. Setting
  * process.exitCode instead lets Node flush first and exit on its own.
  */
 class CliExit extends Error {
@@ -66,10 +66,10 @@ function fail(message: string, hint: string | undefined, code: number): never {
 
 /** The command as the user typed it, recorded at the top of a written report. */
 function commandLine(): string {
-  return ["next-doc", ...process.argv.slice(2)].join(" ");
+  return ["nextdoc", ...process.argv.slice(2)].join(" ");
 }
 
-/** `next-doc env --help` prints the rules that plugin runs. */
+/** `nextdoc env --help` prints the rules that plugin runs. */
 function printPluginHelp(names: PluginName[]): void {
   for (const name of names) {
     const plugin = getPlugin(name);
@@ -82,14 +82,14 @@ function printPluginHelp(names: PluginName[]): void {
       out.write(`    ${c.cyan(rule.code.padEnd(32))} ${rule.title}`);
     }
     out.write("");
-    out.write(c.dim(`  Disable one with { "rules": { "${plugin.rules[0]?.code}": "off" } } in next-doc.config.json`));
+    out.write(c.dim(`  Disable one with { "rules": { "${plugin.rules[0]?.code}": "off" } } in nextdoc.config.json`));
     out.write(c.dim(`  Full reference: docs/03-plugins/${plugin.name}.md`));
   }
   out.write("");
 }
 
 async function initCommand(cwd: string): Promise<void> {
-  const target = path.join(cwd, "next-doc.config.json");
+  const target = path.join(cwd, "nextdoc.config.json");
   for (const name of CONFIG_FILENAMES) {
     try {
       await fs.access(path.join(cwd, name));
@@ -100,7 +100,7 @@ async function initCommand(cwd: string): Promise<void> {
     }
   }
   await fs.writeFile(target, `${JSON.stringify(initialConfig(), null, 2)}\n`, "utf8");
-  out.write(`${c.green("+")} Created next-doc.config.json`);
+  out.write(`${c.green("+")} Created nextdoc.config.json`);
   out.write(c.dim("  Every option is documented in docs/02-configuration.md"));
 }
 
@@ -108,7 +108,7 @@ async function main(): Promise<void> {
   const argv = process.argv.slice(2);
   const namedPlugins = argv.filter((a): a is PluginName => PLUGIN_NAMES.includes(a as PluginName));
 
-  // `next-doc <plugin> --help` lists that plugin's rules. Handled before
+  // `nextdoc <plugin> --help` lists that plugin's rules. Handled before
   // commander parses, so plugin names stay composable positional arguments
   // instead of subcommands.
   if ((argv.includes("--help") || argv.includes("-h")) && namedPlugins.length > 0) {
@@ -119,7 +119,7 @@ async function main(): Promise<void> {
   const program = new Command();
 
   program
-    .name("next-doc")
+    .name("nextdoc")
     .description("One command. Full picture of your Next.js or React app.")
     .version(VERSION, "-v, --version")
     .argument("[plugins...]", `plugins to run: ${PLUGIN_NAMES.join(", ")}. Defaults to all of them.`)
@@ -142,11 +142,11 @@ async function main(): Promise<void> {
       "after",
       `
 Examples:
-  $ npx @wamasoda/next-doc                    run every plugin
-  $ npx @wamasoda/next-doc env security       run two plugins in one pass
-  $ npx @wamasoda/next-doc --fix              apply the safe automatic fixes
-  $ npx @wamasoda/next-doc --json > out.json  machine readable report for CI
-  $ npx @wamasoda/next-doc idempotency --help list the rules a plugin runs
+  $ npx @wamasoda/nextdoc                    run every plugin
+  $ npx @wamasoda/nextdoc env security       run two plugins in one pass
+  $ npx @wamasoda/nextdoc --fix              apply the safe automatic fixes
+  $ npx @wamasoda/nextdoc --json > out.json  machine readable report for CI
+  $ npx @wamasoda/nextdoc idempotency --help list the rules a plugin runs
 
 Exit codes:
   0  no errors, or warnings only without --strict
@@ -157,7 +157,7 @@ Exit codes:
 `,
     );
 
-  program.command("init").description("generate next-doc.config.json with sane defaults").action(async () => {
+  program.command("init").description("generate nextdoc.config.json with sane defaults").action(async () => {
     await initCommand(process.cwd());
   });
 
@@ -240,7 +240,7 @@ main().catch((error: unknown) => {
     const err = error as Error;
     fail(
       err.message || "Unexpected error",
-      `This is a bug in next-doc. Please file an issue with this stack trace:\n${err.stack ?? ""}`,
+      `This is a bug in nextdoc. Please file an issue with this stack trace:\n${err.stack ?? ""}`,
       EXIT.INTERNAL,
     );
   } catch (exit) {

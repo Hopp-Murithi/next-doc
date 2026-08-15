@@ -1,7 +1,7 @@
 # idempotency plugin
 
 ```bash
-npx @wamasoda/next-doc idempotency
+npx @wamasoda/nextdoc idempotency
 ```
 
 This page covers the static scan. The runtime wrapper that fixes what the scan finds is documented separately in [Idempotency runtime](../05-idempotency-runtime.md).
@@ -28,7 +28,7 @@ The rule cannot prove a handler is unprotected. It reports what it can see, and 
 Not "missing protection". Possible. When it is wrong, silence it:
 
 ```ts
-// next-doc-ignore idempotency
+// nextdoc-ignore idempotency
 export async function POST(request: Request) {}
 ```
 
@@ -77,8 +77,8 @@ The file reads an idempotency key but never stores it anywhere. Reading a key an
 ## Fixing what it finds
 
 ```ts
-import { withIdempotency } from "@wamasoda/next-doc/idempotency";
-import { redisAdapter } from "@wamasoda/next-doc/idempotency/redis";
+import { withIdempotency } from "@wamasoda/nextdoc/idempotency";
+import { redisAdapter } from "@wamasoda/nextdoc/idempotency/redis";
 
 export const POST = withIdempotency(
   async (request: Request) => {

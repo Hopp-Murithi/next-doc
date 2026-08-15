@@ -17,7 +17,7 @@ printed over two thousand lines, which is not a report.
 ### Added
 
 - **`--report [path]`** writes the full findings to a markdown file, default
-  `next-doc-report.md`, grouped by plugin then by rule code, with one
+  `nextdoc-report.md`, grouped by plugin then by rule code, with one
   suggestion per rule instead of one per occurrence.
 - **`--full`** prints every finding in the terminal regardless of count.
 - **`--no-report`** never writes a file.
@@ -47,7 +47,7 @@ First release.
 ### Added
 
 - **CLI** with four plugins, composable as positional arguments:
-  `next-doc`, `next-doc env security`, `next-doc idempotency --help`.
+  `nextdoc`, `nextdoc env security`, `nextdoc idempotency --help`.
 - **env plugin**: browser exposed secrets, variables used in code but never
   defined, required variables, declared value types, drift against
   `.env.example`, credentials committed in `.env.example`, unused variables.
@@ -60,7 +60,7 @@ First release.
   unoptimized images, render blocking fonts, overlapping dependencies.
 - **idempotency plugin**: payment, checkout and webhook mutations with no
   duplicate request protection, and keys that are read but never persisted.
-- **Runtime library** at `@wamasoda/next-doc/idempotency`: `withIdempotency` for
+- **Runtime library** at `@wamasoda/nextdoc/idempotency`: `withIdempotency` for
   Web standard handlers and `createIdempotency` for Server Actions, with memory,
   Redis and Postgres adapters as separate entry points. Zero dependencies,
   2.3kb minified and gzipped, enforced by a CI budget.
@@ -71,8 +71,8 @@ First release.
   versioned schema, `--markdown` for pull request comments, `--score`.
 - **`--fix`** for `.env.example` drift and, on a Next.js project with no config
   file, a security headers block. Real environment files are on a hard denylist.
-- **`init` command** to generate `next-doc.config.json`.
-- **Inline suppression** with `// next-doc-ignore <rule-or-plugin>`.
+- **`init` command** to generate `nextdoc.config.json`.
+- **Inline suppression** with `// nextdoc-ignore <rule-or-plugin>`.
 - **Documented exit codes** 0 to 4 for CI.
 - Documentation set in `docs/`, and a one page site in `website/`.
 

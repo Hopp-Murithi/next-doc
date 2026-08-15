@@ -52,7 +52,7 @@ function matchesMoneyPath(filePath: string, patterns: string[]): string | null {
  * any idempotency concept appears in the file. It cannot prove a handler is
  * unprotected, so it reports a possibility and points at the fix.
  *
- * Suppress a false positive with `// next-doc-ignore idempotency` on the
+ * Suppress a false positive with `// nextdoc-ignore idempotency` on the
  * handler line or the line above it.
  */
 export const unprotectedMutationRoute: Rule = {
@@ -88,7 +88,7 @@ export const unprotectedMutationRoute: Rule = {
           line: lineAt(file.text, first.index),
           fixable: false,
           suggestion:
-            "Wrap the handler with withIdempotency from @wamasoda/next-doc/idempotency, or read an Idempotency-Key header and deduplicate yourself. A retried request here can charge a customer twice.",
+            "Wrap the handler with withIdempotency from @wamasoda/nextdoc/idempotency, or read an Idempotency-Key header and deduplicate yourself. A retried request here can charge a customer twice.",
         }),
       );
     }
@@ -141,7 +141,7 @@ export const keyReadButNotStored: Rule = {
           line: 1,
           fixable: false,
           suggestion:
-            "Store the key atomically before doing the work, for example with withIdempotency from @wamasoda/next-doc/idempotency, or a SET NX in Redis, or a unique constraint in your database.",
+            "Store the key atomically before doing the work, for example with withIdempotency from @wamasoda/nextdoc/idempotency, or a SET NX in Redis, or a unique constraint in your database.",
         }),
       );
     }

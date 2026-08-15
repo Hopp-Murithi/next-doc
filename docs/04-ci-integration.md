@@ -20,7 +20,7 @@ name: Audit
 on: [pull_request]
 
 jobs:
-  next-doc:
+  nextdoc:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -34,17 +34,17 @@ jobs:
       # plugin reports that it could not measure, instead of guessing.
       - run: npm run build
 
-      - name: Next Doc
-        run: npx @wamasoda/next-doc --json > next-doc-report.json
+      - name: Nextdoc
+        run: npx @wamasoda/nextdoc --json > nextdoc-report.json
 
       - name: Check for errors
-        run: npx @wamasoda/next-doc --strict
+        run: npx @wamasoda/nextdoc --strict
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: next-doc-report
-          path: next-doc-report.json
+          name: nextdoc-report
+          path: nextdoc-report.json
 ```
 
 The first step always succeeds because it only writes the report. The second step is the gate. Split this way, you keep the machine readable artifact even on a failing run.
@@ -57,7 +57,7 @@ The first step always succeeds because it only writes the report. The second ste
         run: |
           {
             echo 'body<<EOF'
-            npx @wamasoda/next-doc --markdown
+            npx @wamasoda/nextdoc --markdown
             echo EOF
           } >> "$GITHUB_OUTPUT"
 
@@ -72,7 +72,7 @@ The markdown output is a heading, a score line, and one table per plugin with th
 ## Gating on the score instead
 
 ```bash
-SCORE=$(npx @wamasoda/next-doc --score)
+SCORE=$(npx @wamasoda/nextdoc --score)
 if [ "$SCORE" -lt 80 ]; then
   echo "Score $SCORE is below the threshold of 80"
   exit 1
@@ -102,8 +102,8 @@ Then run the whole thing with `--strict` only on the branch that deploys.
 
 A large project will light up on the first run. The way through it:
 
-1. Run `npx @wamasoda/next-doc --json > baseline.json` and read the summary.
-2. Turn off the rules you are not ready for, in `next-doc.config.json`.
+1. Run `npx @wamasoda/nextdoc --json > baseline.json` and read the summary.
+2. Turn off the rules you are not ready for, in `nextdoc.config.json`.
 3. Gate CI on the rest with `--strict`.
 4. Turn rules back on one at a time as you fix them.
 
@@ -112,16 +112,16 @@ That beats a blanket `continue-on-error: true`, which is how a check becomes bac
 ## GitLab CI
 
 ```yaml
-next-doc:
+nextdoc:
   image: node:20
   script:
     - npm ci
     - npm run build
-    - npx @wamasoda/next-doc --json > next-doc-report.json
-    - npx @wamasoda/next-doc --strict
+    - npx @wamasoda/nextdoc --json > nextdoc-report.json
+    - npx @wamasoda/nextdoc --strict
   artifacts:
     when: always
-    paths: [next-doc-report.json]
+    paths: [nextdoc-report.json]
 ```
 
 ## Pre-commit hook
@@ -129,7 +129,7 @@ next-doc:
 ```json
 {
   "lint-staged": {
-    "*.{ts,tsx,js,jsx}": "npx @wamasoda/next-doc env security"
+    "*.{ts,tsx,js,jsx}": "npx @wamasoda/nextdoc env security"
   }
 }
 ```
@@ -141,6 +141,6 @@ Two plugins rather than four: the env and security checks are fast and their fin
 See [JSON schema](06-json-schema.md) for the full shape and the compatibility promise.
 
 ```bash
-npx @wamasoda/next-doc --json \
+npx @wamasoda/nextdoc --json \
   | jq -r '.results[].findings[] | select(.severity == "error") | "\(.file // "-"):\(.line // 0) \(.code) \(.message)"'
 ```

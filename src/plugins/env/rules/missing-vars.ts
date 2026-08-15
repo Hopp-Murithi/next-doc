@@ -21,7 +21,7 @@ export const missingRequiredVars: Rule = {
     return missing.map((key) =>
       finding.error({
         code: "ENV_MISSING_REQUIRED",
-        message: `${key} is required by next-doc.config but is not defined in any environment file`,
+        message: `${key} is required by nextdoc.config but is not defined in any environment file`,
         file: files[0]?.file ?? ".env",
         fixable: false,
         suggestion: `Add ${key} to .env.local for local development and to your hosting provider's environment settings`,
@@ -51,7 +51,7 @@ export const missingUsedVars: Rule = {
           file: ref.file,
           line: ref.line,
           fixable: false,
-          suggestion: `Define ${key} in .env.local, or add it to env.optional in next-doc.config if the platform provides it`,
+          suggestion: `Define ${key} in .env.local, or add it to env.optional in nextdoc.config if the platform provides it`,
         }),
       );
     }

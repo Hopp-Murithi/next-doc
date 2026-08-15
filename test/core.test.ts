@@ -14,7 +14,7 @@ import { VERSION } from "../src/version.js";
 const temps: string[] = [];
 
 async function tempProject(files: Record<string, string>): Promise<string> {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "next-doc-"));
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), "nextdoc-"));
   temps.push(dir);
   for (const [name, contents] of Object.entries(files)) {
     const target = path.join(dir, name);
@@ -31,7 +31,7 @@ afterEach(async () => {
 describe("config", () => {
   it("rejects a config with an unknown key instead of silently ignoring it", async () => {
     const dir = await tempProject({
-      "next-doc.config.json": JSON.stringify({ plugin: ["env"] }),
+      "nextdoc.config.json": JSON.stringify({ plugin: ["env"] }),
     });
     await expect(loadConfig(dir)).rejects.toThrow(/Invalid config/);
   });
@@ -43,7 +43,7 @@ describe("config", () => {
 
   it("merges user config over the defaults", async () => {
     const dir = await tempProject({
-      "next-doc.config.json": JSON.stringify({ strict: true, env: { required: ["DATABASE_URL"] } }),
+      "nextdoc.config.json": JSON.stringify({ strict: true, env: { required: ["DATABASE_URL"] } }),
     });
     const { config } = await loadConfig(dir);
 
@@ -57,7 +57,7 @@ describe("config", () => {
       "package.json": JSON.stringify({ dependencies: { next: "15.0.0", react: "19.0.0" } }),
       "next.config.js": "module.exports = {};",
       ".env": "NEXT_PUBLIC_API_SECRET_KEY=abc123def456\n",
-      "next-doc.config.json": JSON.stringify({
+      "nextdoc.config.json": JSON.stringify({
         rules: { ENV_PUBLIC_SECRET: "warn", ENV_EXAMPLE_MISSING: "off" },
       }),
     });
@@ -80,7 +80,7 @@ describe("byte order marks", () => {
     const dir = await tempProject({
       "package.json": BOM + JSON.stringify({ dependencies: { next: "15.1.0", react: "19.0.0" } }),
       "next.config.js": "module.exports = {};",
-      "next-doc.config.json": BOM + JSON.stringify({ env: { required: ["DATABASE_URL"] } }),
+      "nextdoc.config.json": BOM + JSON.stringify({ env: { required: ["DATABASE_URL"] } }),
     });
 
     const { config } = await loadConfig(dir);
@@ -180,7 +180,7 @@ describe("report output", () => {
     const parsed = JSON.parse(formatJson(report));
 
     expect(parsed.schemaVersion).toBe(1);
-    expect(parsed.tool).toEqual({ name: "@wamasoda/next-doc", version: VERSION });
+    expect(parsed.tool).toEqual({ name: "@wamasoda/nextdoc", version: VERSION });
     expect(parsed.project.framework).toBe("next");
     expect(Object.keys(parsed.summary).sort()).toEqual(
       ["errors", "fixable", "fixesApplied", "passed", "score", "warnings"].sort(),
@@ -207,12 +207,12 @@ describe("report output", () => {
 });
 
 describe("inline suppression", () => {
-  it("honours a next-doc-ignore comment on the flagged line and the line above", async () => {
+  it("honours a nextdoc-ignore comment on the flagged line and the line above", async () => {
     const dir = await tempProject({
       "package.json": JSON.stringify({ dependencies: { next: "15.0.0", react: "19.0.0" } }),
       "next.config.js": "module.exports = {};",
       "app/api/payments/route.ts": [
-        "// next-doc-ignore idempotency",
+        "// nextdoc-ignore idempotency",
         "export async function POST(request: Request) {",
         "  return Response.json({ ok: true });",
         "}",

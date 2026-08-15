@@ -1,7 +1,7 @@
 # performance plugin
 
 ```bash
-npx @wamasoda/next-doc performance
+npx @wamasoda/nextdoc performance
 ```
 
 ## What it checks
@@ -33,10 +33,10 @@ No build output was found, so no sizes were measured.
 
 ```text
 △ No build output found, so bundle sizes were not measured
-    Suggestion: Run next build first, then run next-doc performance again for real bundle numbers.
+    Suggestion: Run next build first, then run nextdoc performance again for real bundle numbers.
 ```
 
-next-doc never estimates a compiled bundle size from source file size. The first time an invented number disagrees with your own build output, every other number the tool prints stops being believable.
+nextdoc never estimates a compiled bundle size from source file size. The first time an invented number disagrees with your own build output, every other number the tool prints stops being believable.
 
 ### `PERF_UNNECESSARY_USE_CLIENT` (warning, Next.js only)
 

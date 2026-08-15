@@ -1,21 +1,21 @@
 # Getting started
 
-next-doc is a single command that audits a Next.js or React project across four areas: environment variables, security, performance, and idempotency. It reads your source, your config and your `.env` files, and prints a report. Nothing is uploaded anywhere.
+nextdoc is a single command that audits a Next.js or React project across four areas: environment variables, security, performance, and idempotency. It reads your source, your config and your `.env` files, and prints a report. Nothing is uploaded anywhere.
 
 ## Install
 
 You do not have to install anything to try it:
 
 ```bash
-npx @wamasoda/next-doc
+npx @wamasoda/nextdoc
 ```
 
 Add it to the project once you want it in CI:
 
 ```bash
-npm install --save-dev @wamasoda/next-doc
-pnpm add -D @wamasoda/next-doc
-yarn add -D @wamasoda/next-doc
+npm install --save-dev @wamasoda/nextdoc
+pnpm add -D @wamasoda/nextdoc
+yarn add -D @wamasoda/nextdoc
 ```
 
 Requires Node 18.18 or newer.
@@ -37,11 +37,11 @@ Rules that only make sense on one framework are skipped elsewhere rather than re
 ## First run
 
 ```bash
-npx @wamasoda/next-doc
+npx @wamasoda/nextdoc
 ```
 
 ```text
-NEXT DOC
+NEXTDOC
 Next.js 15.1.0  TypeScript  App Router
 
 ENV
@@ -86,15 +86,15 @@ The score is `100 - (errors × 15) - (warnings × 5)` per plugin, floored at zer
 Plugin names are positional arguments, so they compose:
 
 ```bash
-npx @wamasoda/next-doc env
-npx @wamasoda/next-doc env security
-npx @wamasoda/next-doc idempotency --help   # lists that plugin's rules
+npx @wamasoda/nextdoc env
+npx @wamasoda/nextdoc env security
+npx @wamasoda/nextdoc idempotency --help   # lists that plugin's rules
 ```
 
 ## Fixing things
 
 ```bash
-npx @wamasoda/next-doc --fix
+npx @wamasoda/nextdoc --fix
 ```
 
 `--fix` only applies changes that cannot be wrong:
@@ -106,7 +106,7 @@ It never writes to `.env`, `.env.local`, `.env.production` or any other real env
 
 ## Next steps
 
-- [Configuration](02-configuration.md), every option in `next-doc.config.json`
+- [Configuration](02-configuration.md), every option in `nextdoc.config.json`
 - [Plugins](03-plugins/env.md), what each rule checks and why
 - [CI integration](04-ci-integration.md), exit codes, JSON output, PR comments
 - [Idempotency runtime](05-idempotency-runtime.md), the `withIdempotency` wrapper

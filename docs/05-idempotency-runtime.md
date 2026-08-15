@@ -1,7 +1,7 @@
 # Idempotency runtime
 
 ```ts
-import { withIdempotency } from "@wamasoda/next-doc/idempotency";
+import { withIdempotency } from "@wamasoda/nextdoc/idempotency";
 ```
 
 The static plugin finds handlers that can charge a customer twice. This is the part that stops it happening.
@@ -12,8 +12,8 @@ It is a separate entry point from the CLI, with zero dependencies of its own, so
 
 ```ts
 // app/api/payments/route.ts
-import { withIdempotency } from "@wamasoda/next-doc/idempotency";
-import { redisAdapter } from "@wamasoda/next-doc/idempotency/redis";
+import { withIdempotency } from "@wamasoda/nextdoc/idempotency";
+import { redisAdapter } from "@wamasoda/nextdoc/idempotency/redis";
 import { redis } from "@/lib/redis";
 
 export const POST = withIdempotency(
@@ -122,8 +122,8 @@ There is no `Request` in a Server Action, so the wrapper form does not apply. Us
 ```ts
 "use server";
 
-import { createIdempotency } from "@wamasoda/next-doc/idempotency";
-import { redisAdapter } from "@wamasoda/next-doc/idempotency/redis";
+import { createIdempotency } from "@wamasoda/nextdoc/idempotency";
+import { redisAdapter } from "@wamasoda/nextdoc/idempotency/redis";
 
 const idempotency = createIdempotency({
   adapter: redisAdapter({ client: redis }),
@@ -146,7 +146,7 @@ export async function checkout(formData: FormData) {
 - A call while the same key is in flight throws `IdempotencyConflictError`.
 - Generate `operationId` when the form renders, not when it submits, so a double submit sends the same key.
 
-Errors thrown: `IdempotencyConflictError`, `IdempotencyMismatchError`, `IdempotencyStorageError`. All are exported from `@wamasoda/next-doc/idempotency`.
+Errors thrown: `IdempotencyConflictError`, `IdempotencyMismatchError`, `IdempotencyStorageError`. All are exported from `@wamasoda/nextdoc/idempotency`.
 
 ## Adapters
 
@@ -155,7 +155,7 @@ Adapters are separate entry points. You import the one you use, so nothing else 
 ### Memory
 
 ```ts
-import { memoryAdapter } from "@wamasoda/next-doc/idempotency/memory";
+import { memoryAdapter } from "@wamasoda/nextdoc/idempotency/memory";
 
 const adapter = memoryAdapter({ maxEntries: 10000 });
 ```
@@ -165,7 +165,7 @@ Development and tests only. Atomic within one process, but two server instances 
 ### Redis
 
 ```ts
-import { redisAdapter } from "@wamasoda/next-doc/idempotency/redis";
+import { redisAdapter } from "@wamasoda/nextdoc/idempotency/redis";
 
 // Bring your own client. ioredis, node-redis v4 and @upstash/redis all work.
 const adapter = redisAdapter({ client: redis, prefix: "idem:" });
@@ -180,7 +180,7 @@ The claim is a single `SET key value PX ttl NX`. Two requests arriving in the sa
 ### Postgres
 
 ```ts
-import { postgresAdapter, idempotencyTableSql } from "@wamasoda/next-doc/idempotency/postgres";
+import { postgresAdapter, idempotencyTableSql } from "@wamasoda/nextdoc/idempotency/postgres";
 import { pool } from "@/lib/db";
 
 const adapter = postgresAdapter({ client: pool, table: "idempotency_keys" });
@@ -222,8 +222,8 @@ One requirement above all: `begin` must be a single atomic set-if-not-exists. A 
 ## Testing your handlers
 
 ```ts
-import { withIdempotency } from "@wamasoda/next-doc/idempotency";
-import { memoryAdapter } from "@wamasoda/next-doc/idempotency/memory";
+import { withIdempotency } from "@wamasoda/nextdoc/idempotency";
+import { memoryAdapter } from "@wamasoda/nextdoc/idempotency/memory";
 
 const route = withIdempotency(handler, { adapter: memoryAdapter() });
 

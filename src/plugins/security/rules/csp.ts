@@ -66,7 +66,7 @@ export const contentSecurityPolicy: Rule = {
           file: unsafe.file,
           fixable: false,
           suggestion:
-            "Replace unsafe directives with a nonce or a hash based policy. next-doc checks presence only in v1, it does not grade the full policy.",
+            "Replace unsafe directives with a nonce or a hash based policy. nextdoc checks presence only in v1, it does not grade the full policy.",
         }),
       );
     }

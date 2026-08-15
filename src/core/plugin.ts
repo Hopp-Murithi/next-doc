@@ -30,11 +30,14 @@ export function scoreFor(findings: Finding[]): number {
   return Math.max(0, 100 - errors * ERROR_WEIGHT - warnings * WARNING_WEIGHT);
 }
 
-const IGNORE_RE = /(?:\/\/|\/\*|\{\s*\/\*|#)\s*next-doc-ignore(?:\s+([\w-]+(?:\s*,\s*[\w-]+)*))?/;
+// `next-doc-ignore` is accepted too, from the release when the package carried
+// that name. Suppression comments live in people's source, so breaking them
+// would mean a wave of findings reappearing for no reason.
+const IGNORE_RE = /(?:\/\/|\/\*|\{\s*\/\*|#)\s*next-?doc-ignore(?:\s+([\w-]+(?:\s*,\s*[\w-]+)*))?/;
 
 /**
- * Honours `// next-doc-ignore <code-or-plugin>` written on the flagged line
- * or on the line directly above it. A bare `// next-doc-ignore` suppresses
+ * Honours `// nextdoc-ignore <code-or-plugin>` written on the flagged line
+ * or on the line directly above it. A bare `// nextdoc-ignore` suppresses
  * every finding on that line. Heuristic rules need an escape hatch, otherwise
  * people stop trusting the tool the first time it is wrong.
  */

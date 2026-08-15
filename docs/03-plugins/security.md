@@ -1,7 +1,7 @@
 # security plugin
 
 ```bash
-npx @wamasoda/next-doc security
+npx @wamasoda/nextdoc security
 ```
 
 ## What it checks
@@ -34,7 +34,7 @@ A CSP exists but contains `'unsafe-inline'` or `'unsafe-eval'`, which removes mo
 
 ### `SECURITY_PUBLIC_SECRET` (error)
 
-Same check as `ENV_PUBLIC_SECRET`, run here too so `next-doc security` is complete on its own. See [env](env.md#env_public_secret-error).
+Same check as `ENV_PUBLIC_SECRET`, run here too so `nextdoc security` is complete on its own. See [env](env.md#env_public_secret-error).
 
 ### `SECURITY_HARDCODED_SECRET` (error, warning in test files)
 
@@ -83,6 +83,6 @@ Only `SECURITY_MISSING_HEADER`, and only when there is no Next.js config file to
 ## Suppressing a finding
 
 ```ts
-// next-doc-ignore SECURITY_MISSING_CSRF
+// nextdoc-ignore SECURITY_MISSING_CSRF
 export async function POST(request: Request) {}
 ```
