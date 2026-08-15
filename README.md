@@ -9,7 +9,7 @@
 [![node](https://img.shields.io/node/v/@wamasoda/next-doc.svg?color=0c7c88)](https://nodejs.org)
 [![license](https://img.shields.io/npm/l/@wamasoda/next-doc.svg?color=0c7c88)](LICENSE)
 
-[Website](https://next-doc-taupe.vercel.app) · [Documentation](docs/01-getting-started.md) · [Rule reference](#rule-reference) · [Changelog](CHANGELOG.md)
+[Website](https://next-doc-taupe.vercel.app) · [Documentation](docs/01-getting-started.md) · [Rule reference](#rule-reference) · [Verification](VERIFICATION.md) · [Changelog](CHANGELOG.md)
 
 </div>
 
