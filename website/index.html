@@ -883,12 +883,12 @@
         border-radius: 4px;
       }
 
-      /* ---------- buy me a soda ----------
-         Buymesoda orange, the one warm colour on the page, so it reads as the only ask.
+      /* ---------- buy me a coffee ----------
+         Buy Me a Coffee yellow, the one warm colour on the page, so it reads as the only ask.
          The QR is inline SVG: the page makes no external requests, and the
          content security policy allows images from 'self' and data: only. */
 
-      .bms {
+      .bmc {
         position: fixed;
         right: 20px;
         bottom: 20px;
@@ -899,7 +899,7 @@
         gap: 12px;
       }
 
-      .bms-button {
+      .bmc-button {
         display: inline-flex;
         align-items: center;
         gap: 10px;
@@ -909,164 +909,202 @@
         font-family: var(--font-mono);
         font-size: 13.5px;
         font-weight: 600;
-        color: #2a1200;
-        background: #ff8a2b4d;
-        background: linear-gradient(180deg, #ffa04d, #f97316);
-        border: 1px solid #d95f02;
+        color: #2b1a00;
+        background: #ffdd554d;
+        background: linear-gradient(180deg, #ffe066, #ffcf33);
+        border: 1px solid #e0ab00;
         border-radius: 999px;
         cursor: pointer;
         box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
         transition: transform 0.18s ease, box-shadow 0.18s ease;
       }
 
-      .bms-button:hover {
+      .bmc-button:hover {
         transform: translateY(-2px);
         box-shadow: 0 10px 26px rgba(0, 0, 0, 0.34);
       }
 
-      .bms-button:active {
+      .bmc-button:active {
         transform: translateY(0);
       }
 
-      /* The cup is drawn the way the Buymesoda mark is: white lid and straw,
+      /* The cup is drawn the way the Buy Me a Coffee mark is: white lid and straw,
          orange body, dark outline. It sits on an orange button, so the body
          is lightened to stay distinct from the background. */
-      .bms-button svg {
+      .bmc-button svg {
         width: 21px;
         height: 21px;
         flex: none;
       }
 
-      .bms-button .lid {
+      .bmc-button .lid {
         fill: #fffaf2;
-        stroke: #2a1200;
+        stroke: #2b1a00;
         stroke-width: 1.1;
         stroke-linejoin: round;
       }
 
-      .bms-button .cup {
-        fill: #ffd9a8;
-        stroke: #2a1200;
+      .bmc-button .cup {
+        fill: #fff0cf;
+        stroke: #2b1a00;
         stroke-width: 1.1;
         stroke-linejoin: round;
       }
 
-      .bms-button .straw {
+      .bmc-button .straw {
         fill: none;
-        stroke: #2a1200;
+        stroke: #2b1a00;
         stroke-width: 1.8;
         stroke-linecap: round;
       }
 
-      .bms-label {
+      .bmc-label {
         white-space: nowrap;
       }
 
-      .bms-panel {
-        width: 232px;
-        padding: 16px;
-        background: var(--surface);
-        border: 1px solid var(--line-strong);
-        border-radius: 14px;
-        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.4);
-        text-align: center;
-        transform-origin: bottom right;
-        animation: bms-in 0.16s ease-out;
+      /* A real modal, not a tooltip. The QR is the point, so it gets room. */
+      .bmc-modal {
+        position: fixed;
+        inset: 0;
+        z-index: 80;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+        background: rgba(4, 8, 9, 0.72);
+        backdrop-filter: blur(3px);
+        animation: bmc-fade 0.15s ease-out;
       }
 
-      @keyframes bms-in {
-        from {
-          opacity: 0;
-          transform: translateY(8px) scale(0.97);
-        }
-      }
-
-      .bms-panel[hidden] {
+      .bmc-modal[hidden] {
         display: none;
       }
 
-      .bms-qr {
-        width: 160px;
-        height: 160px;
-        margin: 0 auto 12px;
-        padding: 8px;
-        /* Always light behind the code. Contrast is what makes it scan. */
-        background: #ffffff;
-        border-radius: 8px;
+      @keyframes bmc-fade {
+        from {
+          opacity: 0;
+        }
       }
 
-      .bms-qr svg {
-        display: block;
-        width: 100%;
-        height: 100%;
+      @keyframes bmc-pop {
+        from {
+          opacity: 0;
+          transform: translateY(12px) scale(0.97);
+        }
       }
 
-      .bms-panel p {
-        margin: 0 0 12px;
-        font-size: 12.5px;
-        line-height: 1.45;
+      .bmc-card {
+        position: relative;
+        width: min(420px, 100%);
+        max-height: 100%;
+        overflow-y: auto;
+        padding: 28px 28px 24px;
+        background: var(--surface);
+        border: 1px solid var(--line-strong);
+        border-radius: 18px;
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.55);
+        text-align: center;
+        animation: bmc-pop 0.22s cubic-bezier(0.2, 0.7, 0.3, 1);
+      }
+
+      .bmc-card h2 {
+        font-family: var(--font-mono);
+        font-size: 19px;
+        margin: 0 0 6px;
+      }
+
+      .bmc-card p {
+        margin: 0 0 20px;
+        font-size: 14px;
         color: var(--text-dim);
       }
 
-      .bms-open {
+      /* White card behind the code. Contrast is what makes it scan. */
+      .bmc-qr {
+        width: min(300px, 100%);
+        margin: 0 auto 20px;
+        padding: 14px;
+        background: #ffffff;
+        border-radius: 14px;
+      }
+
+      .bmc-qr img {
+        display: block;
+        width: 100%;
+        height: auto;
+      }
+
+      .bmc-open {
         display: block;
         font-family: var(--font-mono);
-        font-size: 12.5px;
-        font-weight: 600;
-        color: #2a1200;
-        background: linear-gradient(180deg, #ffa04d, #f97316);
-        border: 1px solid #d95f02;
-        border-radius: 8px;
-        padding: 9px 12px;
+        font-size: 14px;
+        font-weight: 700;
+        color: #2b1a00;
+        background: linear-gradient(180deg, #ffe066, #ffcf33);
+        border: 1px solid #e0ab00;
+        border-radius: 10px;
+        padding: 13px 16px;
         text-decoration: none;
       }
 
-      .bms-open:hover {
+      .bmc-open:hover {
         filter: brightness(1.06);
       }
 
-      .bms-close {
+      .bmc-handle {
+        display: block;
+        margin-top: 14px;
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--text-faint);
+      }
+
+      .bmc-close {
         position: absolute;
-        top: 6px;
-        right: 8px;
+        top: 10px;
+        right: 12px;
         font: inherit;
-        font-size: 16px;
+        font-size: 22px;
         line-height: 1;
         color: var(--text-faint);
         background: none;
         border: 0;
         cursor: pointer;
-        padding: 4px;
+        padding: 6px;
       }
 
-      .bms-close:hover {
+      .bmc-close:hover {
         color: var(--text);
       }
 
-      .bms-panel {
-        position: relative;
-      }
-
       @media (max-width: 640px) {
-        .bms {
+        .bmc {
           right: 14px;
           bottom: 14px;
         }
 
         /* No room for a label next to the cup on a phone. */
-        .bms-button {
+        .bmc-button {
           height: 50px;
           width: 50px;
           padding: 0;
           justify-content: center;
         }
 
-        .bms-label {
+        .bmc-label {
           display: none;
         }
 
-        .bms-panel {
-          width: min(232px, calc(100vw - 28px));
+        .bmc-modal {
+          padding: 16px;
+        }
+
+        .bmc-card {
+          padding: 24px 20px 20px;
+        }
+
+        .bmc-qr {
+          width: min(260px, 100%);
+          padding: 12px;
         }
       }
 
@@ -1501,36 +1539,48 @@ Run <span class="t-accent">nextdoc --fix</span> to apply 2 automatic fixes.</pre
       </footer>
     </div>
 
-    <!-- Buy me a soda. Fixed bottom right, opens a panel with a QR for a
+    <!-- buy me a coffee. Fixed bottom right, opens a panel with a QR for a
          phone camera and a link for everything else. The QR is inline SVG so
          the page still makes no external requests. -->
-    <div class="bms">
-      <div class="bms-panel" id="bms-panel" hidden>
-        <button class="bms-close" type="button" id="bms-close" aria-label="Close">&times;</button>
-        <div class="bms-qr"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 41 41" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h41v41H0z"/><path stroke="#000000" d="M4 4.5h7m2 0h1m1 0h1m1 0h2m1 0h4m1 0h3m2 0h7M4 5.5h1m5 0h1m2 0h1m2 0h4m1 0h1m2 0h1m1 0h1m3 0h1m5 0h1M4 6.5h1m1 0h3m1 0h1m1 0h1m1 0h2m1 0h1m2 0h3m1 0h3m3 0h1m1 0h3m1 0h1M4 7.5h1m1 0h3m1 0h1m1 0h1m1 0h2m2 0h3m2 0h2m1 0h1m1 0h1m1 0h1m1 0h3m1 0h1M4 8.5h1m1 0h3m1 0h1m1 0h2m1 0h2m2 0h1m1 0h2m2 0h1m1 0h1m2 0h1m1 0h3m1 0h1M4 9.5h1m5 0h1m1 0h3m1 0h1m2 0h3m2 0h1m5 0h1m5 0h1M4 10.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M12 11.5h3m4 0h1m5 0h3M4 12.5h1m1 0h5m3 0h2m1 0h6m3 0h3m1 0h5M7 13.5h3m2 0h1m1 0h3m1 0h1m1 0h1m2 0h2m2 0h1m2 0h2m1 0h2m1 0h1M4 14.5h1m5 0h1m2 0h2m1 0h1m2 0h2m1 0h1m1 0h1m1 0h1m5 0h1m1 0h2M4 15.5h2m1 0h2m4 0h3m2 0h2m3 0h3m3 0h1m2 0h3m1 0h1M5 16.5h4m1 0h1m3 0h1m7 0h2m2 0h4m2 0h2M4 17.5h1m1 0h4m2 0h1m2 0h6m3 0h1m1 0h1m2 0h2m4 0h2M5 18.5h1m4 0h3m3 0h1m5 0h2m2 0h1m2 0h5m1 0h1M4 19.5h2m2 0h1m2 0h2m1 0h2m2 0h1m1 0h1m2 0h4m2 0h2m3 0h1M4 20.5h1m2 0h2m1 0h2m1 0h2m2 0h1m2 0h2m1 0h1m2 0h4m1 0h3m2 0h1M5 21.5h1m8 0h1m3 0h7m2 0h1m2 0h2m1 0h3M4 22.5h1m1 0h2m1 0h3m1 0h2m2 0h1m1 0h3m2 0h1m5 0h3m1 0h2M4 23.5h2m3 0h1m1 0h1m7 0h5m1 0h1m2 0h1m1 0h5M4 24.5h2m1 0h1m1 0h3m2 0h1m3 0h1m1 0h1m4 0h5m1 0h3m2 0h1M4 25.5h1m6 0h2m3 0h4m2 0h1m2 0h1m1 0h1m1 0h1m3 0h2m1 0h1M4 26.5h1m1 0h2m2 0h1m1 0h1m1 0h2m1 0h4m3 0h3m8 0h1M4 27.5h1m1 0h3m4 0h5m1 0h1m3 0h1m1 0h1m2 0h1m1 0h1m2 0h2m1 0h1M4 28.5h1m3 0h5m2 0h2m2 0h1m1 0h2m3 0h1m1 0h7M12 29.5h1m7 0h1m2 0h2m2 0h2m3 0h1m1 0h1m1 0h1M4 30.5h7m4 0h6m1 0h1m2 0h4m1 0h1m1 0h1m1 0h2M4 31.5h1m5 0h1m1 0h1m2 0h4m4 0h3m1 0h2m3 0h5M4 32.5h1m1 0h3m1 0h1m1 0h2m1 0h1m2 0h1m3 0h5m1 0h6m1 0h1M4 33.5h1m1 0h3m1 0h1m1 0h1m5 0h3m2 0h1m1 0h1m1 0h3m2 0h5M4 34.5h1m1 0h3m1 0h1m1 0h2m2 0h1m7 0h2m1 0h5m1 0h2M4 35.5h1m5 0h1m3 0h1m3 0h1m1 0h1m1 0h6m4 0h3M4 36.5h7m1 0h1m1 0h1m1 0h1m1 0h1m9 0h4m3 0h1"/></svg></div>
-        <p>Scan with your phone, or open it here.</p>
-        <a
-          class="bms-open"
-          href="https://buymesoda.com/1e4KmYvpwhRk6UefqzS1mOgnzLG3"
-          target="_blank"
-          rel="noopener noreferrer"
-        >Open buymesoda.com</a>
+    <!-- Buy me a coffee. A floating cup bottom right, opening a modal with
+         the QR from buymeacoffee.com and a link through to the page. The image
+         is served from this origin and loaded lazily, so it costs nothing
+         until someone opens it. -->
+    <div class="bmc-modal" id="coffeeModal" role="dialog" aria-modal="true" aria-labelledby="bmc-title" hidden>
+      <div class="bmc-card">
+        <button class="bmc-close" type="button" id="coffeeClose" aria-label="Close">&times;</button>
+        <h2 id="bmc-title">Buy me a coffee</h2>
+        <p>Scan with your phone camera, or open the page here.</p>
+        <div class="bmc-qr">
+          <img
+            src="/qr-code.png"
+            alt="QR code linking to buymeacoffee.com/wamasoda"
+            width="600"
+            height="600"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <a class="bmc-open" href="https://buymeacoffee.com/wamasoda" target="_blank" rel="noopener noreferrer">Open buymeacoffee.com</a>
+        <span class="bmc-handle">buymeacoffee.com/wamasoda</span>
       </div>
+    </div>
 
+    <div class="bmc">
       <button
-        class="bms-button"
+        class="bmc-button"
         type="button"
-        id="bms-toggle"
+        id="coffeeToggle"
         aria-expanded="false"
-        aria-controls="bms-panel"
-        aria-label="Buy me a soda"
+        aria-controls="coffeeModal"
+        aria-label="Buy me a coffee"
       >
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <path class="lid" d="M4.4 6.6h15.2a.9.9 0 0 1 .9 1.05l-.25 1.5a.9.9 0 0 1-.9.75H4.65a.9.9 0 0 1-.9-.75l-.25-1.5A.9.9 0 0 1 4.4 6.6Z" />
           <path class="cup" d="M5.4 10.4h13.2l-1.15 9.1a1.6 1.6 0 0 1-1.6 1.4H8.15a1.6 1.6 0 0 1-1.6-1.4L5.4 10.4Z" />
           <path class="straw" d="M13.6 6.4 15.9 2" />
         </svg>
-        <span class="bms-label">Buy me a soda</span>
+        <span class="bmc-label">Buy me a coffee</span>
       </button>
     </div>
 
@@ -1558,36 +1608,40 @@ Run <span class="t-accent">nextdoc --fix</span> to apply 2 automatic fixes.</pre
         }, 1600);
       });
 
-      // Buy me a soda. The button opens a panel holding a QR for a phone
+      // buy me a coffee. The button opens a panel holding a QR for a phone
       // camera and a link for everything else, rather than navigating away
       // the moment someone taps it.
-      const sodaToggle = document.getElementById("bms-toggle");
-      const sodaPanel = document.getElementById("bms-panel");
-      const sodaClose = document.getElementById("bms-close");
+      const coffeeToggle = document.getElementById("coffeeToggle");
+      const coffeeModal = document.getElementById("coffeeModal");
+      const coffeeClose = document.getElementById("coffeeClose");
 
-      const setSoda = (open) => {
-        sodaPanel.hidden = !open;
-        sodaToggle.setAttribute("aria-expanded", String(open));
-        if (open) sodaPanel.querySelector(".bms-open").focus();
+      const setCoffee = (open) => {
+        coffeeModal.hidden = !open;
+        coffeeToggle.setAttribute("aria-expanded", String(open));
+        // Stop the page scrolling behind the overlay.
+        document.body.style.overflow = open ? "hidden" : "";
+        if (open) coffeeModal.querySelector(".bmc-open").focus();
       };
 
-      sodaToggle.addEventListener("click", () => setSoda(sodaPanel.hidden));
-      sodaClose.addEventListener("click", () => {
-        setSoda(false);
-        sodaToggle.focus();
+      coffeeToggle.addEventListener("click", () => setCoffee(coffeeModal.hidden));
+      coffeeClose.addEventListener("click", () => {
+        setCoffee(false);
+        coffeeToggle.focus();
       });
 
       document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && !sodaPanel.hidden) {
-          setSoda(false);
-          sodaToggle.focus();
+        if (event.key === "Escape" && !coffeeModal.hidden) {
+          setCoffee(false);
+          coffeeToggle.focus();
         }
       });
 
-      document.addEventListener("click", (event) => {
-        if (sodaPanel.hidden) return;
-        if (event.target.closest(".bms")) return;
-        setSoda(false);
+      // Clicking the backdrop, but not the card, closes it.
+      coffeeModal.addEventListener("click", (event) => {
+        if (event.target === coffeeModal) {
+          setCoffee(false);
+          coffeeToggle.focus();
+        }
       });
 
       // Theme. The system setting decides until the reader picks one, then the
